@@ -1,0 +1,2516 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeBazaar — Buy & Browse Reusable Code</title>
+<meta name="description" content="Scripts, automations, UI clones aur poori websites kharido ya bech dijiye. Ek marketplace jahan developers apna code list karke bech sakte hain — koi backend nahi chahiye.">
+
+<!-- Open Graph (WhatsApp, Facebook, LinkedIn share previews) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CodeBazaar">
+<meta property="og:title" content="CodeBazaar — Buy & Browse Reusable Code">
+<meta property="og:description" content="Scripts, automations, UI clones aur poori websites kharido ya bech dijiye. Likha hua code, bar-bar mat likho.">
+<meta property="og:image" content="og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Twitter/X Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="CodeBazaar — Buy & Browse Reusable Code">
+<meta name="twitter:description" content="Scripts, automations, UI clones aur poori websites kharido ya bech dijiye.">
+<meta name="twitter:image" content="og-image.png">
+
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="logo-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="logo-180.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#14161f;
+    --panel:#1c1f2b;
+    --panel-2:#20232f;
+    --line:#2c3040;
+    --text:#e8eaf2;
+    --text-dim:#8288a0;
+    --blue:#7aa2f7;
+    --orange:#e0a458;
+    --purple:#bb9af7;
+    --mint:#6fcf97;
+    --pink:#f7768e;
+    --gold:#ffc93d;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+  }
+  ::selection{ background:var(--blue); color:#0a0b10; }
+  a{ color:inherit; }
+  button{ font-family:inherit; }
+  :focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
+
+  .mono{ font-family:'JetBrains Mono', monospace; }
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(13,13,16,0.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topline{
+    display:flex; align-items:center; gap:14px;
+    padding:14px 24px;
+  }
+  .logo{
+    font-family:'JetBrains Mono',monospace; font-weight:800; font-size:17px;
+    letter-spacing:-0.02em; color:var(--text);
+    display:flex; align-items:center; gap:8px;
+  }
+  .logo .logo-mark{ width:26px; height:26px; border-radius:8px; flex-shrink:0; }
+  .logo-text{
+    background:linear-gradient(90deg, var(--pink) 0%, var(--orange) 50%, var(--mint) 100%);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
+  }
+  .search-box{
+    margin-left:auto;
+    display:flex; align-items:center; gap:8px;
+    background:var(--panel); border:1px solid var(--line); border-radius:8px;
+    padding:8px 12px; width:240px;
+  }
+  .search-box input{
+    background:none; border:none; outline:none; color:var(--text);
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; width:100%;
+  }
+  .search-box input::placeholder{ color:var(--text-dim); }
+  .sell-btn{
+    background:var(--blue); color:#0a0b10; border:none; border-radius:8px;
+    padding:9px 16px; font-weight:600; font-size:13px; cursor:pointer;
+    white-space:nowrap;
+  }
+  .sell-btn:hover{ filter:brightness(1.08); }
+  .wishlist-btn{
+    position:relative; background:var(--panel); border:1px solid var(--line); color:var(--text-dim);
+    border-radius:8px; width:36px; height:36px; flex-shrink:0; font-size:16px; cursor:pointer;
+  }
+  .wishlist-btn:hover{ color:var(--pink); border-color:var(--pink); }
+  .wishlist-btn.active{ color:var(--pink); border-color:var(--pink); }
+  .wishlist-count{
+    position:absolute; top:-6px; right:-6px; background:var(--pink); color:#14161f;
+    font-size:10px; font-weight:700; border-radius:10px; min-width:16px; height:16px;
+    display:flex; align-items:center; justify-content:center; padding:0 4px;
+  }
+  .hidden-badge{ display:none; }
+  .card-heart{
+    position:absolute; top:10px; right:10px; z-index:3; width:28px; height:28px; border-radius:50%;
+    background:rgba(10,11,16,0.65); border:1px solid rgba(255,255,255,0.12); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:13px; cursor:pointer;
+  }
+  .card-heart:hover{ color:var(--pink); }
+  .card-heart.active{ color:var(--pink); border-color:var(--pink); }
+  .card{ position:relative; }
+  .detail-wish-btn{
+    background:var(--panel); border:1px solid var(--line); color:var(--text-dim); border-radius:8px;
+    width:36px; height:36px; flex-shrink:0; font-size:16px; cursor:pointer; margin-right:8px;
+  }
+  .detail-wish-btn:hover{ color:var(--pink); border-color:var(--pink); }
+  .detail-wish-btn.active{ color:var(--pink); border-color:var(--pink); }
+
+  .owner-btn{
+    background:var(--panel); border:1px solid var(--line); color:var(--text-dim);
+    border-radius:8px; width:36px; height:36px; flex-shrink:0; font-size:15px; cursor:pointer;
+  }
+  .owner-btn:hover{ color:var(--text); border-color:var(--text-dim); }
+  .owner-menu-wrap{ position:relative; }
+  .owner-menu{
+    position:absolute; top:44px; right:0; background:var(--panel); border:1px solid var(--line);
+    border-radius:10px; padding:6px; min-width:200px; box-shadow:0 12px 30px rgba(0,0,0,0.4);
+    display:none; z-index:210;
+  }
+  .owner-menu.show{ display:block; }
+  .owner-menu button{
+    display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:none; border:none;
+    color:var(--text); padding:9px 10px; border-radius:7px; font-size:13px; cursor:pointer;
+  }
+  .owner-menu button:hover{ background:var(--panel-2); }
+  .owner-menu .icon{ width:18px; text-align:center; }
+
+  /* ---------- Owner Add-Product panel ---------- */
+  .admin-modal{ max-width:640px; }
+  .admin-note{
+    font-size:12px; color:var(--text-dim); background:var(--panel-2); border:1px solid var(--line);
+    border-radius:8px; padding:10px 12px; margin-bottom:16px; line-height:1.6;
+  }
+  .admin-field{ margin-bottom:14px; }
+  .admin-field label{ display:block; font-size:12.5px; color:var(--text-dim); margin-bottom:6px; }
+  .admin-field input, .admin-field select, .admin-field textarea{
+    width:100%; padding:10px 12px; border-radius:8px; background:var(--panel-2);
+    border:1px solid var(--line); color:var(--text); font-size:13.5px; font-family:inherit;
+  }
+  .admin-field textarea{ resize:vertical; font-family:'JetBrains Mono', monospace; font-size:12.5px; }
+  .admin-field .hint{ font-size:11px; color:var(--text-dim); margin-top:4px; }
+  .admin-row{ display:flex; gap:12px; }
+  .admin-row .admin-field{ flex:1; }
+  .admin-error{ color:var(--pink); font-size:12.5px; margin:8px 0 0; }
+  .admin-code-box{
+    background:var(--panel-2); border:1px solid var(--line); border-radius:8px; padding:12px;
+    font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--mint); white-space:pre-wrap;
+    max-height:280px; overflow-y:auto; margin-bottom:12px; line-height:1.6;
+  }
+  .admin-steps{ font-size:12.5px; color:var(--text-dim); line-height:1.9; margin-bottom:16px; }
+  .admin-steps b{ color:var(--text); }
+
+  /* ---------- Orders dashboard ---------- */
+  .orders-modal{ max-width:760px; }
+  .orders-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
+  .orders-stat{ background:var(--panel-2); border:1px solid var(--line); border-radius:10px; padding:14px; text-align:center; }
+  .orders-stat .num{ font-size:22px; font-weight:700; font-family:'JetBrains Mono', monospace; }
+  .orders-stat .label{ font-size:11px; color:var(--text-dim); margin-top:2px; }
+  .orders-toolbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:10px; flex-wrap:wrap; }
+  .orders-toolbar h3{ margin:0; }
+  .orders-toolbar-btns{ display:flex; gap:8px; }
+  .orders-toolbar-btns button{
+    background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:8px;
+    padding:8px 14px; font-size:12.5px; cursor:pointer;
+  }
+  .orders-toolbar-btns button:hover{ border-color:var(--text-dim); }
+  .orders-list{ display:flex; flex-direction:column; gap:10px; max-height:400px; overflow-y:auto; margin-bottom:8px; }
+  .order-row{ background:var(--panel-2); border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
+  .order-row-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:6px; }
+  .order-row-product{ font-weight:600; font-size:13.5px; }
+  .order-row-buyer{ font-size:12px; color:var(--text-dim); margin-top:2px; }
+  .order-row-amount{ font-family:'JetBrains Mono', monospace; font-weight:700; font-size:14px; color:var(--gold); white-space:nowrap; }
+  .order-row-bottom{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+  .order-row-date{ font-size:11px; color:var(--text-dim); }
+  .order-status-select{
+    font-size:11.5px; font-weight:600; border-radius:20px; padding:4px 10px; border:1px solid var(--line);
+    cursor:pointer; font-family:inherit;
+  }
+  .order-status-select.pending{ background:rgba(255,201,61,0.14); color:var(--gold); }
+  .order-status-select.paid{ background:rgba(122,162,247,0.14); color:var(--blue); }
+  .order-status-select.delivered{ background:rgba(111,207,151,0.14); color:var(--mint); }
+  .order-status-select.cancelled{ background:rgba(247,118,142,0.14); color:var(--pink); }
+  .order-row-del{ background:none; border:none; color:var(--text-dim); font-size:12px; cursor:pointer; }
+  .order-row-del:hover{ color:var(--pink); }
+  .orders-empty{ text-align:center; color:var(--text-dim); font-size:13px; padding:30px 10px; }
+  .orders-add-form{ border-top:1px solid var(--line); padding-top:16px; margin-top:6px; }
+
+  .tabbar{
+    display:flex; gap:2px; overflow-x:auto;
+    padding:0 24px;
+  }
+  .tabbar::-webkit-scrollbar{ display:none; }
+  .tab{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px;
+    padding:9px 16px; color:var(--text-dim);
+    border-bottom:2px solid transparent;
+    cursor:pointer; white-space:nowrap;
+    display:flex; align-items:center; gap:6px;
+  }
+  .tab .tdot{ width:7px; height:7px; border-radius:50%; }
+  .tab.active{ color:var(--text); border-bottom-color:var(--blue); background:var(--panel); }
+  .tab:hover{ color:var(--text); }
+  @media (max-width:900px){ .search-box{ width:160px; } }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    max-width:1180px; margin:0 auto;
+    padding:64px 24px 40px;
+    display:grid; grid-template-columns:1.1fr 1fr; gap:48px;
+    align-items:center;
+  }
+  @media (max-width:860px){ .hero{ grid-template-columns:1fr; padding-top:40px; } }
+
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.12em;
+    color:var(--mint); margin-bottom:14px; display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{ content:'//'; color:var(--text-dim); }
+  h1{
+    font-family:'JetBrains Mono',monospace; font-weight:800; font-size:clamp(28px,4vw,44px);
+    line-height:1.15; letter-spacing:-0.01em; margin-bottom:18px;
+  }
+  h1 .accent{ color:var(--blue); }
+  .hero p{ color:var(--text-dim); font-size:15.5px; max-width:480px; margin-bottom:26px; }
+  .hero-ctas{ display:flex; gap:12px; flex-wrap:wrap; }
+  .btn-primary{
+    background:var(--text); color:var(--ink); border:none; border-radius:8px;
+    padding:12px 20px; font-weight:600; font-size:14px; cursor:pointer;
+  }
+  .btn-ghost{
+    background:transparent; color:var(--text); border:1px solid var(--line); border-radius:8px;
+    padding:12px 20px; font-weight:600; font-size:14px; cursor:pointer;
+  }
+  .btn-ghost:hover{ border-color:var(--blue); }
+
+  /* ---------- Hero code demo ---------- */
+  .demo-file{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.35);
+  }
+  .demo-file .file-tabs{
+    display:flex; border-bottom:1px solid var(--line); background:var(--panel-2);
+  }
+  .demo-file .file-tab{
+    padding:9px 14px; font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--text-dim);
+    border-right:1px solid var(--line);
+  }
+  .demo-file .file-tab.active{ color:var(--text); background:var(--panel); }
+  .demo-code{
+    padding:18px 16px; font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.85;
+    min-height:230px; white-space:pre;
+  }
+  .demo-code .ln{ color:#454a5e; display:inline-block; width:22px; user-select:none; }
+  .kw{ color:var(--purple); } .str{ color:var(--orange); } .fn{ color:var(--blue); } .com{ color:#5b6072; } .num{ color:var(--mint); }
+  .caret{ display:inline-block; width:7px; height:14px; background:var(--blue); vertical-align:-2px; animation:blink 1s steps(1) infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* ---------- Section ---------- */
+  section{ max-width:1180px; margin:0 auto; padding:20px 24px 60px; }
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:8px; }
+  .section-head h2{ font-family:'JetBrains Mono',monospace; font-size:18px; font-weight:700; }
+  .section-head span{ color:var(--text-dim); font-size:13px; }
+
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(270px,1fr)); gap:16px; }
+
+  /* ---------- File card (signature element) ---------- */
+  .card{
+    position:relative; overflow:hidden;
+    background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    display:flex; flex-direction:column;
+    transition:border-color .15s ease, transform .15s ease;
+    cursor:pointer;
+  }
+  .card:hover{ border-color:#3a3f54; transform:translateY(-2px); }
+
+  .card-ghost{
+    position:absolute; inset:0; z-index:0; opacity:0.05;
+    font-family:'JetBrains Mono',monospace; font-size:11px; line-height:1.9;
+    padding:44px 16px 0; white-space:pre; pointer-events:none;
+  }
+
+  .card-topbar{
+    position:relative; z-index:1;
+    display:flex; align-items:center; gap:8px;
+    padding:10px 14px; border-bottom:1px solid var(--line);
+  }
+  .lang-dot{ width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+  .filename{ font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--text-dim); }
+  .price-badge{
+    margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;
+    padding:3px 9px; border-radius:100px;
+  }
+  .price-badge.free{ background:rgba(111,207,151,0.15); color:var(--mint); }
+  .price-badge.paid{ background:rgba(224,164,88,0.15); color:var(--orange); }
+
+  .card-body{ position:relative; z-index:1; padding:16px 14px 14px; flex:1; display:flex; flex-direction:column; }
+  .card-title{ font-weight:600; font-size:14.5px; margin-bottom:6px; }
+  .card-desc{ color:var(--text-dim); font-size:12.5px; margin-bottom:14px; flex:1; }
+  .card-tags{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+  .card-tags span{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--text-dim);
+    border:1px solid var(--line); border-radius:5px; padding:2px 7px;
+  }
+  .card-action{
+    width:100%; border:none; border-radius:8px; padding:10px; font-weight:600; font-size:13px; cursor:pointer;
+  }
+  .card-action.free{ background:var(--mint); color:#0a0b10; }
+  .card-action.paid{ background:var(--orange); color:#0a0b10; }
+  .card-action:hover{ filter:brightness(1.08); }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(6,7,11,0.75); backdrop-filter:blur(3px);
+    display:none; align-items:center; justify-content:center; z-index:100; padding:20px;
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    padding:24px; width:100%; max-width:380px;
+  }
+  .modal h3{ font-family:'JetBrains Mono',monospace; font-size:16px; margin-bottom:8px; }
+  .modal p{ color:var(--text-dim); font-size:13.5px; margin-bottom:18px; }
+  .modal-price{ font-family:'JetBrains Mono',monospace; font-size:26px; color:var(--orange); font-weight:700; margin-bottom:18px; }
+  .modal-actions{ display:flex; flex-direction:column; gap:10px; }
+  .modal-actions a, .modal-actions button{
+    display:block; text-align:center; text-decoration:none;
+    border-radius:8px; padding:11px; font-weight:600; font-size:13.5px; cursor:pointer; border:none;
+  }
+  .wa-btn{ background:var(--blue); color:#0a0b10; }
+  .email-btn{ background:transparent; color:var(--text); border:1px solid var(--line); }
+  .close-btn{ background:none; color:var(--text-dim); font-size:12.5px; }
+
+  footer{
+    border-top:1px solid var(--line); padding:28px 24px; text-align:center;
+    color:var(--text-dim); font-size:12.5px; font-family:'JetBrains Mono',monospace;
+  }
+  footer .footer-links{ margin-top:10px; display:flex; gap:16px; justify-content:center; }
+  footer .footer-links a{ color:var(--text-dim); text-decoration:none; }
+  footer .footer-links a:hover{ color:var(--text); }
+
+  /* ---------- Product Detail Modal ---------- */
+  .detail-overlay{
+    position:fixed; inset:0; background:rgba(6,7,11,0.8); backdrop-filter:blur(3px);
+    display:none; align-items:flex-start; justify-content:center; z-index:90;
+    padding:20px; overflow-y:auto;
+  }
+  .detail-overlay.show{ display:flex; }
+  .detail-modal{
+    background:var(--panel); border:1px solid var(--line); border-radius:16px;
+    width:100%; max-width:760px; margin:20px 0 40px; overflow:hidden;
+  }
+  .detail-header{
+    display:flex; align-items:flex-start; gap:14px;
+    padding:20px 22px; border-bottom:1px solid var(--line);
+  }
+  .detail-header-text{ flex:1; }
+  .detail-title{ font-size:19px; font-weight:700; margin-bottom:4px; }
+  .detail-filename{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-dim); }
+  .detail-close{
+    background:none; border:1px solid var(--line); color:var(--text-dim);
+    width:32px; height:32px; border-radius:8px; cursor:pointer; font-size:15px; flex-shrink:0;
+  }
+  .detail-close:hover{ color:var(--text); border-color:var(--blue); }
+
+  /* Gallery */
+  .gallery{ padding:18px 22px 0; }
+  .gallery-main{
+    width:100%; aspect-ratio:16/10; border-radius:10px; overflow:hidden;
+    background:var(--panel-2); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .gallery-main img{ width:100%; height:100%; object-fit:cover; object-position:top; }
+  .gallery-thumbs{ display:flex; gap:8px; margin-top:8px; overflow-x:auto; }
+  .gallery-thumbs img{
+    width:64px; height:44px; object-fit:cover; object-position:top; border-radius:6px;
+    border:2px solid transparent; cursor:pointer; opacity:0.7; flex-shrink:0;
+  }
+  .gallery-thumbs img.active{ border-color:var(--blue); opacity:1; }
+
+  .detail-body{ padding:18px 22px 22px; }
+  .detail-meta-row{
+    display:flex; flex-wrap:wrap; gap:8px 18px;
+    font-size:12px; color:var(--text-dim); font-family:'JetBrains Mono',monospace;
+    margin-bottom:18px; padding-bottom:16px; border-bottom:1px solid var(--line);
+  }
+  .detail-meta-row span b{ color:var(--text); font-weight:600; }
+
+  .detail-section{ margin-bottom:22px; }
+  .detail-section h3{ font-size:13px; font-family:'JetBrains Mono',monospace; color:var(--mint); margin-bottom:10px; letter-spacing:0.03em; }
+  .detail-section p{ font-size:14px; color:var(--text-dim); line-height:1.6; }
+  .feature-list{ list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .feature-list li{ font-size:13.5px; color:var(--text); padding-left:20px; position:relative; }
+  .feature-list li::before{ content:'✓'; position:absolute; left:0; color:var(--mint); font-weight:700; }
+
+  .install-steps{ list-style:none; counter-reset:step; display:flex; flex-direction:column; gap:10px; }
+  .install-steps li{ font-size:13.5px; color:var(--text-dim); padding-left:28px; position:relative; }
+  .install-steps li::before{
+    counter-increment:step; content:counter(step);
+    position:absolute; left:0; top:0; width:18px; height:18px; border-radius:5px;
+    background:var(--panel-2); border:1px solid var(--line); color:var(--blue);
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .install-steps code{ background:var(--panel-2); padding:1px 6px; border-radius:4px; font-size:12px; color:var(--orange); }
+
+  .changelog-item{ display:flex; gap:12px; font-size:13px; margin-bottom:8px; }
+  .changelog-version{ font-family:'JetBrains Mono',monospace; color:var(--blue); flex-shrink:0; width:44px; }
+  .changelog-date{ color:var(--text-dim); flex-shrink:0; width:70px; }
+  .changelog-note{ color:var(--text-dim); }
+
+  .detail-faq-item{ border-bottom:1px solid var(--line); }
+  .detail-faq-q{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:12px 0; font-size:13.5px; font-weight:600; color:var(--text);
+    display:flex; justify-content:space-between; align-items:center; font-family:inherit;
+  }
+  .detail-faq-q span{ color:var(--blue); font-size:15px; }
+  .detail-faq-a{ max-height:0; overflow:hidden; transition:max-height .2s ease; }
+  .detail-faq-item.open .detail-faq-a{ max-height:200px; }
+  .detail-faq-a p{ padding:0 0 12px; font-size:13px; color:var(--text-dim); }
+
+  /* Rating / reviews */
+  .rating-summary{ display:flex; align-items:center; gap:14px; margin-bottom:16px; }
+  .rating-big{ font-family:'JetBrains Mono',monospace; font-size:32px; font-weight:700; color:var(--text); }
+  .rating-stars{ color:var(--orange); font-size:15px; letter-spacing:1px; }
+  .rating-count{ font-size:12px; color:var(--text-dim); }
+  .review-list{ display:flex; flex-direction:column; gap:12px; margin-bottom:16px; }
+  .review-item{ background:var(--panel-2); border:1px solid var(--line); border-radius:8px; padding:12px 14px; }
+  .review-item-top{ display:flex; justify-content:space-between; margin-bottom:4px; }
+  .review-name{ font-size:13px; font-weight:600; }
+  .review-stars{ color:var(--orange); font-size:12px; }
+  .review-text{ font-size:13px; color:var(--text-dim); }
+  .review-empty{ font-size:13px; color:var(--text-dim); background:var(--panel-2); border:1px dashed var(--line); border-radius:8px; padding:16px; text-align:center; }
+
+  .review-form{ display:flex; flex-direction:column; gap:8px; }
+  .review-form-row{ display:flex; gap:8px; }
+  .review-form input, .review-form textarea{
+    background:var(--panel-2); border:1px solid var(--line); color:var(--text);
+    border-radius:8px; padding:9px 12px; font-size:13px; font-family:inherit; outline:none;
+  }
+  .review-form input{ flex:1; }
+  .review-form textarea{ resize:vertical; min-height:60px; }
+  .star-picker{ display:flex; gap:4px; font-size:20px; cursor:pointer; }
+  .star-picker span{ color:var(--line); }
+  .star-picker span.active{ color:var(--orange); }
+  .review-submit{
+    align-self:flex-start; background:var(--blue); color:#0a0b10; border:none;
+    padding:8px 16px; border-radius:8px; font-weight:600; font-size:12.5px; cursor:pointer;
+  }
+
+  .related-section{ padding:22px 22px 4px; border-top:1px solid var(--line); }
+  .related-heading{ font-size:14.5px; font-weight:700; margin-bottom:14px; }
+  .related-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:12px; }
+  .related-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px;
+    cursor:pointer; transition:border-color .15s ease;
+  }
+  .related-card:hover{ border-color:var(--blue); }
+  .related-card-top{ display:flex; align-items:center; gap:6px; margin-bottom:8px; }
+  .related-card-dot{ width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .related-card-name{ font-size:12.5px; font-weight:600; line-height:1.35; margin-bottom:6px; }
+  .related-card-price{ font-size:12px; font-weight:700; color:var(--gold); }
+  .related-card-price.free{ color:var(--mint); }
+
+  .detail-footer{
+    position:sticky; bottom:0; background:var(--panel);
+    border-top:1px solid var(--line); padding:16px 22px;
+    display:flex; align-items:center; gap:14px;
+  }
+  .detail-price{ font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; }
+  .detail-buy-btn{
+    margin-left:auto; border:none; border-radius:8px; padding:11px 22px;
+    font-weight:600; font-size:14px; cursor:pointer;
+  }
+  .detail-buy-btn.free{ background:var(--mint); color:#0a0b10; }
+  .detail-buy-btn.paid{ background:var(--orange); color:#0a0b10; }
+
+  /* ---------- Splash screen (3D logo intro) ---------- */
+  #splash{
+    position:fixed; inset:0; z-index:999; background:var(--ink);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:26px;
+    transition:opacity .5s ease, visibility .5s ease;
+  }
+  #splash.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+  .cube-scene{ width:100px; height:100px; perspective:600px; filter:drop-shadow(0 0 22px rgba(247,118,142,0.45)) drop-shadow(0 0 44px rgba(122,162,247,0.25)); }
+  .cube{
+    width:100%; height:100%; position:relative; transform-style:preserve-3d;
+    animation:cubeSpin 2.5s cubic-bezier(.65,0,.35,1) forwards;
+  }
+  .cube-face{
+    position:absolute; width:100px; height:100px; display:flex; align-items:center; justify-content:center;
+    font-family:monospace; font-weight:700; font-size:15px; color:#0a0b10; border-radius:10px;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,0.12), inset 0 0 18px rgba(255,255,255,0.4);
+  }
+  .cube-face.front{ background:var(--pink);  transform:rotateY(0deg)   translateZ(50px); box-shadow:inset 0 0 0 1px rgba(0,0,0,0.12), inset 0 0 18px rgba(255,255,255,0.4), 0 0 22px var(--pink); }
+  .cube-face.back{  background:var(--text);  transform:rotateY(180deg) translateZ(50px); font-size:11px; box-shadow:inset 0 0 0 1px rgba(0,0,0,0.12), inset 0 0 18px rgba(255,255,255,0.4), 0 0 22px var(--text); }
+  .cube-face.right{ background:var(--orange); transform:rotateY(90deg)  translateZ(50px); box-shadow:inset 0 0 0 1px rgba(0,0,0,0.12), inset 0 0 18px rgba(255,255,255,0.4), 0 0 22px var(--orange); }
+  .cube-face.left{  background:var(--mint);  transform:rotateY(-90deg) translateZ(50px); box-shadow:inset 0 0 0 1px rgba(0,0,0,0.12), inset 0 0 18px rgba(255,255,255,0.4), 0 0 22px var(--mint); }
+  .cube-face.top{   background:var(--blue);  transform:rotateX(90deg)  translateZ(50px); box-shadow:inset 0 0 0 1px rgba(0,0,0,0.12), inset 0 0 18px rgba(255,255,255,0.4), 0 0 22px var(--blue); }
+  .cube-face.bottom{background:var(--gold);  transform:rotateX(-90deg) translateZ(50px); box-shadow:inset 0 0 0 1px rgba(0,0,0,0.12), inset 0 0 18px rgba(255,255,255,0.4), 0 0 22px var(--gold); }
+  @keyframes cubeSpin{
+    0%  { transform:rotateX(0deg) rotateY(0deg); }
+    70% { transform:rotateX(360deg) rotateY(540deg); }
+    100%{ transform:rotateX(360deg) rotateY(720deg); }
+  }
+  .splash-word{
+    font-family:monospace; font-weight:700; font-size:22px; color:var(--text); letter-spacing:-0.02em;
+    opacity:0; animation:splashWordIn .6s ease forwards; animation-delay:2.2s;
+    text-shadow:0 0 18px rgba(247,118,142,0.5);
+  }
+  .splash-word span{ color:var(--pink); }
+  @keyframes splashWordIn{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:translateY(0);} }
+  @media (prefers-reduced-motion: reduce){
+    .cube{ animation-duration:.4s; }
+    .splash-word{ animation-delay:.4s; }
+  }
+  /* ---------- Chat widget (WhatsApp) ---------- */
+  #chatBubble{
+    position:fixed; bottom:22px; right:22px; z-index:200;
+    width:58px; height:58px; border-radius:50%; background:#25D366; color:#fff;
+    display:flex; align-items:center; justify-content:center; border:none; cursor:pointer;
+    box-shadow:0 8px 24px rgba(37,211,102,0.45); animation:chatPulse 2.4s ease-in-out infinite;
+  }
+  #chatBubble svg{ width:28px; height:28px; }
+  #chatBubble:hover{ background:#20bd5a; }
+  #chatBubble .chat-dot{
+    position:absolute; top:2px; right:2px; width:13px; height:13px; border-radius:50%;
+    background:var(--gold); border:2px solid var(--ink);
+  }
+  @keyframes chatPulse{ 0%,100%{ box-shadow:0 8px 24px rgba(37,211,102,0.45); } 50%{ box-shadow:0 8px 30px rgba(37,211,102,0.75); } }
+
+  #chatPanel{
+    position:fixed; bottom:92px; right:22px; z-index:200; width:340px; max-width:calc(100vw - 32px);
+    height:460px; max-height:calc(100vh - 130px); background:var(--panel); border:1px solid var(--line);
+    border-radius:14px; display:flex; flex-direction:column; overflow:hidden;
+    box-shadow:0 20px 50px rgba(0,0,0,0.5); transform:translateY(12px); opacity:0; pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease;
+  }
+  #chatPanel.open{ opacity:1; transform:translateY(0); pointer-events:auto; }
+
+  .chat-header{ display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid var(--line); background:var(--panel-2); }
+  .chat-header-status{ width:9px; height:9px; border-radius:50%; background:var(--mint); flex-shrink:0; }
+  .chat-header-text{ flex:1; }
+  .chat-header-title{ font-weight:700; font-size:13.5px; }
+  .chat-header-sub{ font-size:11px; color:var(--mint); }
+  .chat-close-btn{ background:none; border:none; color:var(--text-dim); font-size:15px; cursor:pointer; padding:4px; }
+  .chat-close-btn:hover{ color:var(--text); }
+
+  .chat-body{ flex:1; overflow-y:auto; padding:14px 12px; display:flex; flex-direction:column; gap:10px; }
+  .chat-msg{ max-width:82%; padding:9px 12px; border-radius:12px; font-size:13px; line-height:1.5; }
+  .chat-msg.bot{ align-self:flex-start; background:var(--panel-2); border:1px solid var(--line); border-bottom-left-radius:3px; }
+  .chat-msg.user{ align-self:flex-end; background:var(--blue); color:#0a0b10; border-bottom-right-radius:3px; font-weight:500; }
+  .chat-quick-replies{ display:flex; flex-direction:column; gap:6px; margin-top:2px; }
+  .chat-quick-btn{
+    align-self:flex-start; background:var(--panel-2); border:1px solid var(--line); color:var(--text);
+    border-radius:20px; padding:7px 13px; font-size:12px; cursor:pointer; text-align:left;
+  }
+  .chat-quick-btn:hover{ border-color:var(--blue); color:var(--blue); }
+  .chat-wa-btn{
+    align-self:flex-start; background:#25D366; color:#fff; border:none; border-radius:20px;
+    padding:8px 14px; font-size:12px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block;
+  }
+  .chat-wa-btn.primary{ font-size:13px; padding:10px 16px; align-self:stretch; text-align:center; margin-bottom:4px; }
+
+  .chat-input-row{ display:flex; gap:8px; padding:10px; border-top:1px solid var(--line); background:var(--panel); }
+  .chat-input-row input{
+    flex:1; background:var(--panel-2); border:1px solid var(--line); border-radius:20px; padding:9px 14px;
+    color:var(--text); font-size:13px; outline:none;
+  }
+  .chat-input-row input:focus{ border-color:var(--blue); }
+  .chat-send-btn{
+    width:36px; height:36px; border-radius:50%; background:var(--blue); color:#0a0b10; border:none;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; font-size:14px;
+  }
+  .chat-send-btn:hover{ background:#8fb4ff; }
+
+  @media (max-width:480px){
+    #chatPanel{ right:16px; left:16px; width:auto; bottom:86px; }
+    #chatBubble{ right:16px; bottom:16px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="cube-scene">
+    <div class="cube">
+      <div class="cube-face front">&lt;/&gt;</div>
+      <div class="cube-face back">codebazaar</div>
+      <div class="cube-face right">&#8377;</div>
+      <div class="cube-face left">{ }</div>
+      <div class="cube-face top">##</div>
+      <div class="cube-face bottom">::</div>
+    </div>
+  </div>
+  <div class="splash-word">code<span>bazaar</span></div>
+</div>
+
+<header>
+  <div class="topline">
+    <div class="logo"><img src="logo.svg" class="logo-mark" alt="CodeBazaar"><span class="logo-text">codebazaar</span></div>
+    <div class="search-box">
+      <span class="mono" style="color:var(--text-dim); font-size:12px;">⌕</span>
+      <input type="text" id="searchInput" placeholder="search code...">
+    </div>
+    <button class="wishlist-btn" id="wishlistBtn" title="Wishlist">&#9825;<span class="wishlist-count hidden-badge" id="wishlistCount">0</span></button>
+    <button class="sell-btn" id="sellBtn">+ Sell your code</button>
+    <div class="owner-menu-wrap">
+      <button class="owner-btn" id="ownerMenuBtn" title="Owner Tools">&#9881;</button>
+      <div class="owner-menu" id="ownerMenu">
+        <button type="button" id="menuAddProduct"><span class="icon">&#10133;</span> Add Product</button>
+        <button type="button" id="menuOrders"><span class="icon">&#128203;</span> Orders Dashboard</button>
+        <button type="button" id="menuAnalytics"><span class="icon">&#128202;</span> Analytics</button>
+        <button type="button" id="menuCoupons"><span class="icon">&#127991;</span> Coupons</button>
+      </div>
+    </div>
+  </div>
+  <div class="tabbar" id="tabbar"></div>
+</header>
+
+<div class="hero">
+  <div>
+    <div class="eyebrow">a marketplace for reusable code</div>
+    <h1>Likha hua code,<br><span class="accent">bar-bar mat likho.</span></h1>
+    <p>Scripts, automations, aur snippets — kuch free, kuch paid. Jo chahiye use le lo, jo bana hai use bech do.</p>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="document.getElementById('browse').scrollIntoView({behavior:'smooth'})">Browse code</button>
+      <button class="btn-ghost" id="heroSellBtn">Apna code bechein</button>
+    </div>
+  </div>
+  <div class="demo-file">
+    <div class="file-tabs">
+      <div class="file-tab active">whatsapp_bot.py</div>
+      <div class="file-tab">₹299</div>
+    </div>
+    <div class="demo-code" id="demoCode"></div>
+  </div>
+</div>
+
+<section id="browse">
+  <div class="section-head">
+    <h2>// listings</h2>
+    <span id="resultCount"></span>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<footer>
+  codebazaar — likha gaya code, dobara kaam aata hai.
+  <div class="footer-links">
+    <a href="terms.html">Terms of Service</a>
+    <a href="privacy.html">Privacy Policy</a>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 id="modalTitle">File name</h3>
+    <p id="modalDesc">Description</p>
+    <div class="modal-price" id="modalPrice"></div>
+    <div id="couponBlock" style="margin-bottom:14px; display:none;">
+      <div style="display:flex; gap:8px;">
+        <input type="text" id="couponInput" placeholder="Coupon code (optional)" style="flex:1; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:8px; padding:9px 12px; font-size:13px;">
+        <button type="button" id="applyCouponBtn" style="background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:8px; padding:9px 14px; font-size:12.5px; cursor:pointer; white-space:nowrap;">Apply</button>
+      </div>
+      <div id="couponMsg" style="font-size:11.5px; margin-top:6px; display:none;"></div>
+    </div>
+    <div id="upiBlock" style="background:rgba(122,162,247,0.1); border:1px solid var(--line); border-radius:10px; padding:12px; margin-bottom:16px; display:none;">
+      <div style="font-size:11px; color:var(--text-dim); margin-bottom:4px;">STEP 1 — UPI se pay karein</div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span class="mono" id="upiIdText" style="font-size:14px; font-weight:600;"></span>
+        <button type="button" id="copyUpiBtn" style="background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:6px; padding:4px 9px; font-size:11px; cursor:pointer;">Copy</button>
+      </div>
+      <div style="font-size:11px; color:var(--text-dim); margin-top:8px;">STEP 2 — Payment screenshot ke saath neeche WhatsApp karein, code turant bhej diya jayega.</div>
+    </div>
+    <div id="buyerEmailBlock" style="margin-bottom:14px; display:none;">
+      <input type="email" id="buyerEmailInput" placeholder="Aapka email (optional — confirmation ke liye)" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:8px; padding:9px 12px; font-size:13px;">
+    </div>
+    <div class="modal-actions">
+      <a href="#" id="waLink" class="wa-btn" target="_blank" rel="noopener noreferrer">WhatsApp par contact karein</a>
+      <button class="close-btn" id="closeModal">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="detail-overlay" id="detailOverlay">
+  <div class="detail-modal">
+    <div class="detail-header">
+      <div class="detail-header-text">
+        <div class="detail-title" id="detailTitle"></div>
+        <div class="detail-filename mono" id="detailFilename"></div>
+      </div>
+      <button class="detail-wish-btn" id="detailWishBtn" aria-label="Wishlist me add/remove karo">&#9825;</button>
+      <button class="detail-close" id="detailCloseBtn">✕</button>
+    </div>
+
+    <div class="gallery">
+      <div class="gallery-main"><img id="galleryMainImg" src="" alt=""></div>
+      <div class="gallery-thumbs" id="galleryThumbs"></div>
+    </div>
+
+    <div class="detail-body">
+      <div class="detail-meta-row">
+        <span>Version <b id="detailVersion"></b></span>
+        <span>Last updated <b id="detailUpdated"></b></span>
+        <span>File size <b id="detailFileSize"></b></span>
+        <span>Category <b id="detailCategory"></b></span>
+      </div>
+
+      <div class="detail-section">
+        <h3>// description</h3>
+        <p id="detailDesc"></p>
+      </div>
+
+      <div class="detail-section">
+        <h3>// features</h3>
+        <ul class="feature-list" id="detailFeatures"></ul>
+      </div>
+
+      <div class="detail-section">
+        <h3>// installation guide</h3>
+        <ol class="install-steps" id="detailInstall"></ol>
+      </div>
+
+      <div class="detail-section">
+        <h3>// requirements</h3>
+        <p id="detailRequirements"></p>
+      </div>
+
+      <div class="detail-section">
+        <h3>// changelog</h3>
+        <div id="detailChangelog"></div>
+      </div>
+
+      <div class="detail-section">
+        <h3>// faq</h3>
+        <div id="detailFaq"></div>
+      </div>
+
+      <div class="detail-section">
+        <h3>// rating &amp; reviews</h3>
+        <div class="rating-summary">
+          <div class="rating-big" id="ratingAvg">—</div>
+          <div>
+            <div class="rating-stars" id="ratingStars">☆☆☆☆☆</div>
+            <div class="rating-count" id="ratingCount">No reviews yet</div>
+          </div>
+        </div>
+        <div class="review-list" id="reviewList"></div>
+
+        <div class="review-form">
+          <div class="star-picker" id="starPicker">
+            <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+          </div>
+          <div class="review-form-row">
+            <input type="text" id="reviewName" placeholder="Your name">
+          </div>
+          <textarea id="reviewText" placeholder="Kharidne ke baad apna experience share karein..."></textarea>
+          <button class="review-submit" id="submitReviewBtn">Submit Review</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="related-section" id="relatedSection">
+      <h3 class="related-heading">Aapko yeh bhi pasand aa sakta hai</h3>
+      <div class="related-grid" id="relatedGrid"></div>
+    </div>
+
+    <div class="detail-footer">
+      <div class="detail-price" id="detailPrice"></div>
+      <button class="detail-buy-btn" id="detailBuyBtn">Buy</button>
+    </div>
+  </div>
+</div>
+
+<!-- 24/7 WhatsApp chat widget -->
+<button id="chatBubble" aria-label="WhatsApp par chat kholo">
+  <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16.02 3C9.4 3 4 8.4 4 15.02c0 2.22.6 4.3 1.65 6.09L4 29l8.06-1.6a12.9 12.9 0 0 0 3.96.62h.01C22.65 28.02 28 22.62 28 16S22.65 3 16.02 3zm0 23.4c-1.3 0-2.57-.25-3.75-.75l-.27-.11-4.79.95.93-4.67-.12-.28a10.35 10.35 0 0 1-1.6-5.52c0-5.73 4.66-10.39 10.4-10.39 2.78 0 5.38 1.08 7.35 3.05a10.32 10.32 0 0 1 3.05 7.34c0 5.73-4.67 10.38-10.2 10.38zm5.7-7.78c-.31-.16-1.84-.9-2.12-1.01-.28-.1-.49-.16-.7.16-.2.31-.8 1-.98 1.21-.18.2-.36.23-.67.08-.31-.16-1.3-.48-2.48-1.53-.92-.82-1.53-1.83-1.72-2.14-.18-.31-.02-.48.14-.63.14-.14.31-.36.47-.55.16-.18.2-.31.31-.52.1-.2.05-.39-.02-.55-.08-.16-.7-1.68-.96-2.3-.25-.6-.5-.52-.7-.53h-.6c-.2 0-.55.08-.83.39-.28.31-1.09 1.06-1.09 2.6 0 1.52 1.12 2.99 1.27 3.2.16.2 2.2 3.36 5.34 4.71.75.32 1.33.51 1.78.66.75.24 1.43.2 1.97.13.6-.09 1.84-.75 2.1-1.47.26-.73.26-1.35.18-1.48-.08-.13-.28-.2-.59-.36z"/>
+  </svg>
+  <span class="chat-dot"></span>
+</button>
+<div id="chatPanel">
+  <div class="chat-header">
+    <span class="chat-header-status"></span>
+    <div class="chat-header-text">
+      <div class="chat-header-title">codebazaar support</div>
+      <div class="chat-header-sub">24/7 WhatsApp available &middot; usually replies fast</div>
+    </div>
+    <button class="chat-close-btn" id="chatCloseBtn" aria-label="Band karo">&#10005;</button>
+  </div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-input-row">
+    <input type="text" id="chatInput" placeholder="Apna sawaal likho...">
+    <button class="chat-send-btn" id="chatSendBtn" aria-label="Bhejo">&#10148;</button>
+  </div>
+</div>
+
+<!-- Owner: Add Product panel -->
+<div class="modal-overlay" id="adminOverlay">
+  <div class="modal admin-modal" id="adminModalBody"></div>
+</div>
+
+<!-- Owner: Orders dashboard -->
+<div class="modal-overlay" id="ordersOverlay">
+  <div class="modal orders-modal" id="ordersModalBody"></div>
+</div>
+
+<!-- Owner: Analytics dashboard -->
+<div class="modal-overlay" id="analyticsOverlay">
+  <div class="modal orders-modal" id="analyticsModalBody"></div>
+</div>
+
+<!-- Owner: Coupons manager -->
+<div class="modal-overlay" id="couponsOverlay">
+  <div class="modal orders-modal" id="couponsModalBody"></div>
+</div>
+
+<script>
+// ===== CONFIGURE YOUR CONTACT INFO HERE =====
+const SELLER_WHATSAPP = "918102207464";
+const SELLER_UPI = "rajpalkumar71687@oksbi";
+// ==============================================
+
+// ===== COUPONS — edit or add codes here =====
+// type: 'percent' (value = % off) or 'flat' (value = ₹ off)
+// minAmount: coupon only applies if the product price is >= this
+const COUPONS = [
+  { code:'WELCOME10', type:'percent', value:10, minAmount:0,   active:true },
+  { code:'FLAT50',    type:'flat',    value:50, minAmount:200, active:true },
+];
+
+// ===== GOOGLE ANALYTICS (optional) =====
+// Free real analytics across ALL visitors (not just this browser).
+// 1. Create a free GA4 property at analytics.google.com
+// 2. Copy your Measurement ID (looks like "G-XXXXXXXXXX")
+// 3. Paste it below — analytics turns on automatically, no other changes needed.
+const GA_MEASUREMENT_ID = ""; // e.g. "G-XXXXXXXXXX" — leave blank to disable
+
+// ===== EMAIL NOTIFICATIONS (optional, via EmailJS — free tier) =====
+// Sends YOU an email whenever a buyer starts checkout (in addition to
+// the WhatsApp message), and optionally a confirmation email to the
+// buyer if they enter their email in the buy form.
+// Setup (free): https://www.emailjs.com
+//   1. Sign up, add an Email Service (e.g. Gmail) — note the Service ID
+//   2. Create an Email Template — note the Template ID
+//   3. Account > General > copy your Public Key
+//   4. Fill in the three values below
+const EMAILJS_SERVICE_ID  = ""; // e.g. "service_abc123"
+const EMAILJS_TEMPLATE_ID = ""; // e.g. "template_xyz789"
+const EMAILJS_PUBLIC_KEY  = ""; // e.g. "AbCdEfGhIjKlMnOp"
+const NOTIFY_EMAIL = ""; // your own email address, to receive order alerts
+
+const LANG_COLORS = {
+  python: '#e0a458', javascript: '#f7d774', web: '#7aa2f7',
+  automation: '#bb9af7', data: '#6fcf97', bash: '#f7768e', games: '#ff5a7a'
+};
+
+// ===== Load Google Analytics (only if configured) =====
+if(GA_MEASUREMENT_ID){
+  const gaScript = document.createElement('script');
+  gaScript.async = true;
+  gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+  document.head.appendChild(gaScript);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function(){ dataLayer.push(arguments); };
+  gtag('js', new Date());
+  gtag('config', GA_MEASUREMENT_ID);
+}
+function trackEvent(name, params){
+  if(GA_MEASUREMENT_ID && window.gtag) gtag('event', name, params || {});
+}
+
+// ===== Load EmailJS SDK (only if configured) =====
+if(EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY){
+  const ejsScript = document.createElement('script');
+  ejsScript.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+  ejsScript.onload = function(){ window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY }); };
+  document.head.appendChild(ejsScript);
+}
+function sendNotificationEmail(params){
+  if(!(EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY && window.emailjs)) return;
+  window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params).catch(()=>{
+    // fails silently — WhatsApp remains the reliable notification channel
+  });
+}
+
+const PRODUCTS = [
+  {
+    id:10, name:'joya_assistant.zip', title:'JOYA — Voice AI Assistant',
+    desc:'Glowing orb UI wala personal AI assistant — voice chat, camera, YouTube song search sab kuch. Gemini API ke saath.',
+    tag:'javascript', price:99, tags:['html','css','javascript'], gumroadUrl:'',
+    images:['images/joya_1.png'],
+    version:'v1.0', lastUpdated:'Jul 2026', fileSize:'9.9 KB',
+    features:[
+      'Voice chat with Gemini AI, Hindi + Hinglish replies',
+      'Speech-to-text mic input aur natural text-to-speech female voice',
+      'Camera capture — photo khींचकर uske baare me poocho',
+      'YouTube song search — tap karke seedha video khुले',
+      'Instagram profile quick-open',
+      'Settings panel — apni Gemini API key browser me hi save hoti hai'
+    ],
+    install:[
+      'Teeno files (index.html, style.css, script.js) ek folder me rakho',
+      'GitHub Pages ya kisi bhi https hosting par upload karo',
+      '⚙️ Settings me apni free Gemini API key daalo (aistudio.google.com/apikey)',
+      'Mic/camera use karne ke liye site https par hosted honi chahiye'
+    ],
+    requirements:'Koi bhi modern browser (Chrome recommended). Free Gemini API key chahiye. Mic/camera ke liye https hosting zaroori hai.',
+    changelog:[{v:'v1.0', d:'Jul 2026', note:'Initial release'}],
+    faq:[
+      {q:'Gemini API key free hai?', a:'Haan, Google AI Studio se free key milti hai. Free tier me daily limit hoti hai, jo personal use ke liye kaafi hai.'},
+      {q:'Mic/camera kaam nahi kar raha?', a:'Ye file ko seedha download folder se kholne par kaam nahi karega — https par host karna zaroori hai (jaise GitHub Pages).'}
+    ]
+  },
+  {
+    id:11, name:'karna_assistant.zip', title:'KARNA — Voice AI Assistant',
+    desc:'Warrior-theme AI assistant — illustrated logo, male voice option, Gemini API ke saath voice chat.',
+    tag:'javascript', price:0, tags:['html','css','javascript'], gumroadUrl:'',
+    images:['images/karna_1.png'],
+    version:'v1.0', lastUpdated:'Jul 2026', fileSize:'11.5 KB',
+    features:[
+      'JOYA jaisi hi saari features — chat, mic, camera, YouTube search',
+      'Illustrated warrior-style logo (mukut, kavach, kundal)',
+      'Male voice preference + optional Google Cloud TTS (real neural male voice)',
+      'Gold-bronze warrior color theme'
+    ],
+    install:[
+      'Teeno files ek folder me rakho',
+      'https hosting par upload karo (GitHub Pages)',
+      '⚙️ Settings me Gemini API key daalo',
+      'Chaho to Google Cloud TTS enable karke real male voice on karo (README me steps hain)'
+    ],
+    requirements:'Koi bhi modern browser. Free Gemini API key. Real male voice ke liye Google Cloud TTS API (optional, free tier available).',
+    changelog:[{v:'v1.0', d:'Jul 2026', note:'Initial release'}],
+    faq:[
+      {q:'Male voice available hai?', a:'Phone ki built-in TTS me shayad na mile — isliye humne Google Cloud TTS ka optional toggle diya hai jisse asli male neural voice milti hai.'}
+    ]
+  },
+  {
+    id:12, name:'insta_auto_dm_bot.zip', title:'Instagram Auto DM Bot',
+    desc:'Naye followers ko automatically welcome DM bhejta hai (Selenium based). Apne khud ke account ke liye — README me safe-use tips di gayi hain.',
+    tag:'automation', price:199, tags:['python','selenium'], gumroadUrl:'',
+    images:[],
+    version:'v1.0', lastUpdated:'Jul 2026', fileSize:'4.3 KB',
+    features:[
+      'Naye followers ko automatically welcome DM',
+      'Duplicate messaging nahi karta — already-messaged list yaad rakhta hai',
+      'Configurable daily send limit aur random delays (ban-risk kam karne ke liye)',
+      'Poora Selenium source code, easily customizable message'
+    ],
+    install:[
+      'Python 3.9+ install karo',
+      'pip install selenium webdriver-manager',
+      'Script me apna username/password aur welcome message daalo',
+      'python insta_auto_dm.py chalao'
+    ],
+    requirements:'Python 3.9+, Google Chrome installed. Instagram account jiska aap khud malik ho.',
+    changelog:[{v:'v1.0', d:'Jul 2026', note:'Initial release'}],
+    faq:[
+      {q:'Account ban ho sakta hai kya?', a:'Instagram automation ko restrict karta hai — isliye safe defaults (kam messages, random delay) diye hain, lekin risk poori tarah khatam nahi hota. Apne responsibility par use karein.'},
+      {q:'Kisi aur ke account par chala sakte hain?', a:'Nahi — ye sirf aapke apne login se, aapke apne account ke liye hai.'}
+    ]
+  },
+  {
+    id:23, name:'whatsapp_auto_dm_bot.zip', title:'WhatsApp Auto DM Bot',
+    desc:'WhatsApp Web par naye messages ka automatically welcome/auto-reply bhejta hai (Selenium based). Apne khud ke number ke liye — README me safe-use tips di gayi hain.',
+    tag:'automation', price:249, tags:['python','selenium'], gumroadUrl:'',
+    images:[],
+    version:'v1.0', lastUpdated:'Aug 2026', fileSize:'11.4 KB',
+    features:[
+      'Naye/unread chats ko automatically welcome ya keyword-based reply',
+      'Duplicate reply nahi karta — already-replied list yaad rakhta hai',
+      'Configurable check interval aur random delays (ban-risk kam karne ke liye)',
+      'Poora Selenium source code, easily customizable message aur keywords',
+      'Ek baar QR scan karo, phir background me chalta rehta hai'
+    ],
+    install:[
+      'Python 3.9+ install karo',
+      'pip install selenium webdriver-manager',
+      'Script me apna welcome message aur keyword replies daalo',
+      'python whatsapp_auto_dm.py chalao aur QR code scan karo (WhatsApp Web jaisa)'
+    ],
+    requirements:'Python 3.9+, Google Chrome installed. Apna khud ka WhatsApp number (WhatsApp Web se link hoga).',
+    changelog:[{v:'v1.0', d:'Aug 2026', note:'Initial release'}],
+    faq:[
+      {q:'Number ban ho sakta hai kya?', a:'WhatsApp automation ko restrict karta hai — isliye safe defaults (random delay, daily limit) diye hain, lekin risk poori tarah khatam nahi hota. Apne responsibility par use karein.'},
+      {q:'Kisi aur ke number par chala sakte hain?', a:'Nahi — ye sirf aapke apne WhatsApp Web session se, aapke apne number ke liye hai.'},
+      {q:'Business API chahiye?', a:'Nahi — yeh normal WhatsApp Web automate karta hai (Selenium se), koi paid WhatsApp Business API nahi chahiye.'}
+    ]
+  },
+  {
+    id:13, name:'portfolio_template.zip', title:'Developer Portfolio Template',
+    desc:'Blueprint/technical-drawing style personal portfolio website — hero, about, projects aur contact section, fully responsive. Bas apna naam-projects daal kar host kar do.',
+    tag:'web', price:149, tags:['html','css','javascript'], gumroadUrl:'',
+    images:['images/portfolio_1.png','images/portfolio_2.png'],
+    version:'v1.0', lastUpdated:'Jul 2026', fileSize:'6.1 KB',
+    features:[
+      'Blueprint/technical-drawing visual theme — grid background, dimension-line dividers',
+      'Hero, About, Skills, Projects, Contact sections',
+      'Engineering-style "title block" contact card',
+      'Fully responsive, no frameworks'
+    ],
+    install:[
+      'Teeno files (index.html, style.css, script.js) ek folder me rakho',
+      'Apna naam, projects, skills, links README ke hisaab se edit karo',
+      'index.html browser me kholke preview karo',
+      'GitHub Pages/Netlify par upload karo'
+    ],
+    requirements:'Koi bhi modern browser. Koi build tool ya framework nahi chahiye.',
+    changelog:[{v:'v1.0', d:'Jul 2026', note:'Initial release'}],
+    faq:[
+      {q:'Colors badal sakte hain?', a:'Haan, style.css ke top wale CSS variables se poora theme badal sakte ho.'}
+    ]
+  },
+  {
+    id:14, name:'quiz_app.zip', title:'QuizBlitz — Interactive Quiz App',
+    desc:'Game-show style quiz — countdown timer ring, instant right/wrong feedback, score aur local leaderboard. Apne khud ke sawal daal sakte ho.',
+    tag:'javascript', price:99, tags:['html','css','javascript'], gumroadUrl:'',
+    images:['images/quiz_1.png','images/quiz_2.png'],
+    version:'v1.0', lastUpdated:'Jul 2026', fileSize:'6.7 KB',
+    features:[
+      'Countdown timer ring har sawal ke liye',
+      'Sahi/galat par turant animation feedback',
+      'Score tracking + local leaderboard (localStorage)',
+      'Fully customizable question bank — kitne bhi sawal daal sakte ho'
+    ],
+    install:[
+      'Teeno files ek folder me rakho',
+      'script.js me QUESTIONS array me apne sawal daalo',
+      'index.html browser me test karo',
+      'Kisi bhi static host par upload karo'
+    ],
+    requirements:'Koi bhi modern browser. Koi backend/server nahi chahiye.',
+    changelog:[{v:'v1.0', d:'Jul 2026', note:'Initial release'}],
+    faq:[
+      {q:'Leaderboard sab logo ke liye common hai?', a:'Nahi — har device apna alag local leaderboard save karta hai (koi shared server nahi hai).'}
+    ]
+  },
+  {
+    id:15, name:'price_scraper.zip', title:'Price Drop Tracker',
+    desc:'Kisi bhi product page ka price track karta hai aur target price par pahunchte hi email alert bhejta hai. Setup instructions README me hain.',
+    tag:'python', price:129, tags:['python','scraping'], gumroadUrl:'',
+    images:[],
+    version:'v1.0', lastUpdated:'Jul 2026', fileSize:'4.5 KB',
+    features:[
+      'Kisi bhi e-commerce product page ka price track karta hai',
+      'Target price par pahunchte hi email alert',
+      'Duplicate alerts nahi bhejta jab tak price wapas na badhe',
+      'Cron/Task Scheduler ke saath automatic checking'
+    ],
+    install:[
+      'Python 3.9+ install karo',
+      'pip install requests beautifulsoup4',
+      'Product URL, CSS selector aur target price daalo',
+      'Gmail App Password se email alerts setup karo (README me steps)'
+    ],
+    requirements:'Python 3.9+. Har site ka apna CSS selector dhoondhna padega (README me tarika hai).',
+    changelog:[{v:'v1.0', d:'Jul 2026', note:'Initial release'}],
+    faq:[
+      {q:'Amazon/Flipkart ke liye ready selector milega?', a:'Nahi — har site ka HTML alag aur changing hota hai, isliye har product ke liye khud selector dhoondhna hota hai (README me exact steps diye hain).'}
+    ]
+  },
+  {
+    id:17, name:'air_hockey.zip', title:'Neon Air Hockey',
+    desc:'Canvas-based Air Hockey game — real paddle-vs-puck physics, CPU opponent, live stats (streak, top speed, power hits).',
+    tag:'javascript', price:89, tags:['html','css','javascript'], gumroadUrl:'',
+    images:['images/hockey_1.png','images/hockey_2.png'],
+    version:'v1.0', lastUpdated:'Jul 2026', fileSize:'6.8 KB',
+    features:[
+      'Real paddle-vs-puck collision physics',
+      'CPU opponent AI',
+      'Live stats: streak, top speed, power hits',
+      'WebAudio sound effects — koi audio file ki zaroorat nahi',
+      'Mouse aur touch dono support karta hai'
+    ],
+    install:[
+      'Teeno files ek folder me rakho',
+      'index.html browser me kholke test karo',
+      'Kisi bhi static host par upload karo'
+    ],
+    requirements:'Koi bhi modern browser. Koi backend/server nahi chahiye.',
+    changelog:[{v:'v1.0', d:'Jul 2026', note:'Initial release'}],
+    faq:[
+      {q:'CPU ka difficulty badal sakte hain?', a:'Haan, script.js me CPU_SPEED value badal kar CPU ko aasan ya mushkil bana sakte ho.'}
+    ]
+  },
+  {
+    id:18, name:'clipwave-ui-clone.zip', title:'Clipwave — Video Platform UI Clone',
+    desc:'YouTube jaisi video-browsing UI — sidebar nav, category chips, video grid aur poora watch page (comments + up next) ke saath. Fictional content, koi backend nahi chahiye.',
+    tag:'web', price:799, tags:['html','css','javascript'], gumroadUrl:'',
+    images:[],
+    version:'v1.0', lastUpdated:'Aug 2026', fileSize:'23.7 KB',
+    features:[
+      'Sidebar navigation + category chips jo video grid ko filter karte hain',
+      'Search box — title/channel ke hisaab se type karte hi filter',
+      'Poora watch page — gradient player, description, subscribe toggle, comments',
+      '"Up next" sidebar — related videos, click karke unka watch page khulta hai',
+      '12 fictional videos, 6 categories — sab kuch customizable'
+    ],
+    install:[
+      'Teeno files (index.html, style.css, script.js) ek folder me rakho',
+      'index.html browser me kholke preview karo',
+      'Kisi bhi static host (GitHub Pages, Netlify, Vercel) par upload karo — backend nahi chahiye',
+      'script.js ke VIDEOS array me apna content daal do'
+    ],
+    requirements:'Koi bhi modern browser. Koi framework ya build tool nahi chahiye.',
+    changelog:[{v:'v1.0', d:'Aug 2026', note:'Initial release'}],
+    faq:[
+      {q:'Kya isme asli video chalta hai?', a:'Nahi — yeh sirf browsing/watch UI hai. Thumbnail aur player gradient placeholders hain, asli video playback nahi hai.'},
+      {q:'Colors badal sakte hain?', a:'Haan, style.css ke top wale CSS variables (--violet, --pink, --green) se poora theme badal sakte ho.'}
+    ]
+  },
+  {
+    id:19, name:'nightreel-ui-clone.zip', title:'Nightreel — Streaming Platform UI Clone',
+    desc:'Netflix-style streaming browse UI — hero banner, horizontal scrolling rows, hover preview aur "more like this" detail modal. Original branding, fictional titles, sirf frontend.',
+    tag:'web', price:899, tags:['html','css','javascript'], gumroadUrl:'',
+    images:[],
+    version:'v1.0', lastUpdated:'Aug 2026', fileSize:'18.6 KB',
+    features:[
+      'Hero banner + horizontal scrolling content rows',
+      'Hover par preview aur "more like this" detail modal',
+      'Typographic gradient "posters" — asli movie poster ki jagah unique gradient + bold title',
+      '12 fictional titles, customizable rows aur genres',
+      'Fully responsive, nav chhote screens par collapse hota hai'
+    ],
+    install:[
+      'Teeno files (index.html, style.css, script.js) ek folder me rakho',
+      'index.html browser me kholke preview karo',
+      'Kisi bhi static host par upload karo — backend nahi chahiye',
+      'script.js ke TITLES aur ROWS array me apna content daal do'
+    ],
+    requirements:'Koi bhi modern browser. Koi framework ya build tool nahi chahiye.',
+    changelog:[{v:'v1.0', d:'Aug 2026', note:'Initial release'}],
+    faq:[
+      {q:'Kya real movie posters hain?', a:'Nahi — koi real poster/branding nahi hai. Har card ek unique gradient + bold typographic title use karta hai, jo ek deliberate design choice hai.'},
+      {q:'Apni khud ki images laga sakte hain?', a:'Haan — script.js ke hashGradient() function ki jagah <img> tag use kar sakte ho agar apna artwork hai.'}
+    ]
+  },
+  {
+    id:20, name:'reverb-ui-clone.zip', title:'Reverb — Music Streaming UI Clone',
+    desc:'Spotify-style music streaming interface — sidebar library, playlist grid, searchable track list, aur poora working now-playing bar (play/pause, seek, shuffle, repeat, like). Fictional tracks, koi backend nahi chahiye.',
+    tag:'web', price:849, tags:['html','css','javascript'], gumroadUrl:'',
+    images:[],
+    version:'v1.0', lastUpdated:'Aug 2026', fileSize:'27.3 KB',
+    features:[
+      'Sidebar — Home / Search / Your Library + playlist shortcuts',
+      'Playlist grid, hover par play button',
+      'Poora playlist view — track list, header art, "play all"',
+      'Search — title, artist ya genre ke hisaab se turant filter',
+      'Now-playing bar — play/pause, next/previous, seek bar, shuffle, repeat, volume, like (heart) button',
+      '14 fictional tracks, 5 playlists — sab kuch customizable'
+    ],
+    install:[
+      'Teeno files (index.html, style.css, script.js) ek folder me rakho',
+      'index.html browser me kholke preview karo',
+      'Kisi bhi static host (GitHub Pages, Netlify, Vercel) par upload karo — backend nahi chahiye',
+      'script.js ke TRACKS aur PLAYLISTS array me apna content daal do'
+    ],
+    requirements:'Koi bhi modern browser. Koi framework ya build tool nahi chahiye. Asli audio chalane ke liye README me steps hain.',
+    changelog:[{v:'v1.0', d:'Aug 2026', note:'Initial release'}],
+    faq:[
+      {q:'Kya isme asli gaane bajte hain?', a:'Nahi — playback ek timer se simulate hoti hai (progress bar chalta hai, track khatam hone par agla track aata hai), lekin koi real audio file nahi hai. README me batayaa hai ki asli <audio> tag kaise jodein.'},
+      {q:'Naye tracks ya playlists add kar sakte hain?', a:'Haan — script.js ke TRACKS aur PLAYLISTS array edit karke jitne chaho utne track/playlist add kar sakte ho.'}
+    ]
+  },
+  {
+    id:21, name:'kartify-ecommerce.zip', title:'Kartify — Full E-Commerce Website Clone',
+    desc:'Poori online shopping storefront UI — home page, category filters + sorting, product detail pages, cart drawer, checkout aur order confirmation. Original branding, 21 fictional products, koi backend nahi chahiye.',
+    tag:'web', price:1499, tags:['html','css','javascript'], gumroadUrl:'',
+    images:[],
+    version:'v1.0', lastUpdated:'Aug 2026', fileSize:'43.9 KB',
+    features:[
+      'Home — hero banner, category tiles, "Trending Now" aur "Deals of the Day" rows',
+      'Shop view — category, price range, aur rating filters + 4 sort options',
+      'Live search — naam ya category ke hisaab se turant filter',
+      'Product detail page — quantity selector, Add to Cart / Buy Now, related products',
+      'Wishlist — heart icon + dedicated wishlist page',
+      'Cart drawer — quantity badhao/ghatao, remove, subtotal, ₹999+ par free shipping',
+      'Checkout — shipping form validation (10-digit phone, 6-digit pincode) + order summary',
+      'Order confirmation — order ID generate karta hai, cart clear karta hai',
+      '21 fictional products, 6 categories — sab kuch customizable'
+    ],
+    install:[
+      'Teeno files (index.html, style.css, script.js) ek folder me rakho',
+      'index.html browser me kholke preview karo',
+      'Kisi bhi static host (GitHub Pages, Netlify, Vercel) par upload karo — backend nahi chahiye',
+      'script.js ke PRODUCTS array me apna catalog daal do'
+    ],
+    requirements:'Koi bhi modern browser. Koi framework ya build tool nahi chahiye. Real store banane ke liye backend + payment gateway alag se chahiye hoga (README me details hain).',
+    changelog:[{v:'v1.0', d:'Aug 2026', note:'Initial release'}],
+    faq:[
+      {q:'Kya isse asli order/payment ho sakta hai?', a:'Nahi — "Place Order" sirf localStorage me order save karta hai aur confirmation dikhata hai. Real store ke liye backend, database, aur payment gateway (Razorpay/Stripe) alag se jodna hoga — README me guidance hai.'},
+      {q:'Product images kaise laga sakte hain?', a:'Abhi har product ek gradient "swatch" use karta hai (real photo nahi). script.js/style.css me .p-image ki jagah <img> tag laga kar apni photos use kar sakte ho.'},
+      {q:'Naye products add kar sakte hain?', a:'Haan — script.js ke PRODUCTS array me naya object add karo, README me exact format diya hai.'}
+    ]
+  },
+  {
+    id:22, name:'grit-gym-website.zip', title:'GRIT — Gym & Fitness Website',
+    desc:'Poori gym marketing website — hero, class catalog, weekly schedule, trainer profiles, membership pricing (monthly/annual), working BMI calculator, testimonials aur contact form. Original branding, fictional content.',
+    tag:'web', price:899, tags:['html','css','javascript'], gumroadUrl:'',
+    images:[],
+    version:'v1.0', lastUpdated:'Aug 2026', fileSize:'33.7 KB',
+    features:[
+      'Sticky nav — smooth-scroll section links + mobile hamburger menu',
+      'Hero, stats bar, "Why Choose Us" feature grid',
+      '6 classes — har ek ka apna "Book a Slot" form',
+      'Weekly schedule table — data se auto-generate hoti hai',
+      'Trainer profile grid',
+      'Membership pricing — 3 tiers, monthly/annual billing toggle',
+      'Working BMI calculator — height/weight se live BMI + category',
+      'Testimonials grid + contact form (validation ke saath)'
+    ],
+    install:[
+      'Teeno files (index.html, style.css, script.js) ek folder me rakho',
+      'index.html browser me kholke preview karo',
+      'Kisi bhi static host (GitHub Pages, Netlify, Vercel) par upload karo — backend nahi chahiye',
+      'script.js ke CLASSES, TRAINERS, PLANS, SCHEDULE_GRID array me apna content daal do'
+    ],
+    requirements:'Koi bhi modern browser. Koi framework ya build tool nahi chahiye. Real bookings/payments ke liye backend + payment gateway alag se chahiye hoga.',
+    changelog:[{v:'v1.0', d:'Aug 2026', note:'Initial release'}],
+    faq:[
+      {q:'Kya "Join" ya "Book a Slot" se asli booking hoti hai?', a:'Nahi — yeh ek confirmation toast dikhate hain, koi backend ya database nahi hai. Real bookings ke liye apna backend jodna hoga.'},
+      {q:'BMI calculator kaise kaam karta hai?', a:'Standard BMI formula (weight/height²) use karta hai — poori tarah client-side, koi data kahin bheja nahi jaata.'},
+      {q:'Apna gym content daal sakte hain?', a:'Haan — script.js ke top wale data arrays (CLASSES, TRAINERS, PLANS, SCHEDULE_GRID, TESTIMONIALS) edit karke poora content replace kar sakte ho.'}
+    ]
+  },
+];
+
+const CATEGORIES = ['all','javascript','web','automation','python'];
+
+let activeTab = 'all';
+
+let searchQuery = '';
+
+const WISHLIST_KEY = 'cb_wishlist_v1';
+let wishlist = new Set(loadWishlist());
+let showWishlistOnly = false;
+
+function loadWishlist(){
+  try{ return JSON.parse(localStorage.getItem(WISHLIST_KEY) || '[]'); }
+  catch(e){ return []; }
+}
+function saveWishlist(){
+  try{ localStorage.setItem(WISHLIST_KEY, JSON.stringify([...wishlist])); }catch(e){}
+}
+function toggleWishlist(id){
+  if(wishlist.has(id)) wishlist.delete(id); else wishlist.add(id);
+  saveWishlist();
+  updateWishlistBadge();
+  renderGrid();
+}
+function updateWishlistBadge(){
+  const el = document.getElementById('wishlistCount');
+  el.textContent = wishlist.size;
+  el.classList.toggle('hidden-badge', wishlist.size === 0);
+}
+
+function renderTabs(){
+  const tabbar = document.getElementById('tabbar');
+  tabbar.innerHTML = '';
+  CATEGORIES.forEach(cat=>{
+    const div = document.createElement('div');
+    div.className = 'tab' + (cat === activeTab && !showWishlistOnly ? ' active' : '');
+    const dotColor = cat === 'all' ? '#7d8299' : LANG_COLORS[cat] || '#7d8299';
+    div.innerHTML = `<span class="tdot" style="background:${dotColor}"></span>${cat}`;
+    div.addEventListener('click', ()=>{
+      activeTab = cat;
+      showWishlistOnly = false;
+      document.getElementById('wishlistBtn').classList.remove('active');
+      renderTabs();
+      renderGrid();
+    });
+    tabbar.appendChild(div);
+  });
+}
+
+function makeGhostLines(n){
+  const kws = ['def','import','const','return','if','for','class','async'];
+  let out = '';
+  for(let i=0;i<n;i++){
+    out += kws[Math.floor(Math.random()*kws.length)] + ' ' + 'x'.repeat(4 + Math.floor(Math.random()*14)) + '\n';
+  }
+  return out;
+}
+
+function getProductRating(productId){
+  const reviews = getReviews(productId);
+  if(!reviews.length) return null;
+  const avg = reviews.reduce((s,r)=>s+r.stars,0) / reviews.length;
+  return { avg, count: reviews.length };
+}
+
+function makeCard(p){
+  const card = document.createElement('div');
+  card.className = 'card';
+  const color = LANG_COLORS[p.tag] || '#7d8299';
+  const isFree = p.price === 0;
+  const isWished = wishlist.has(p.id);
+  card.innerHTML = `
+    <button class="card-heart ${isWished ? 'active' : ''}" data-wish="${p.id}" aria-label="Wishlist me add/remove karo">${isWished ? '&#9829;' : '&#9825;'}</button>
+    <div class="card-ghost">${makeGhostLines(9)}</div>
+    <div class="card-topbar">
+      <span class="lang-dot" style="background:${color}"></span>
+      <span class="filename mono">${p.name}</span>
+      <span class="price-badge ${isFree ? 'free' : 'paid'}">${isFree ? 'FREE' : '₹' + p.price}</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">${p.title}</div>
+      <div class="card-desc">${p.desc}</div>
+      <div class="card-tags">${p.tags.map(t=>`<span>${t}</span>`).join('')}</div>
+      <button class="card-action ${isFree ? 'free' : 'paid'}" data-id="${p.id}">${isFree ? 'Free me le lo' : 'Kharido — ₹' + p.price + ' →'}</button>
+    </div>
+  `;
+  card.addEventListener('click', ()=> openDetail(p));
+  return card;
+}
+
+function renderGrid(){
+  const grid = document.getElementById('grid');
+  const q = searchQuery.trim().toLowerCase();
+  const filtered = PRODUCTS.filter(p=>{
+    const matchesTab = activeTab === 'all' || p.tag === activeTab;
+    const matchesQuery = !q || p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q) || p.name.toLowerCase().includes(q);
+    const matchesWishlist = !showWishlistOnly || wishlist.has(p.id);
+    return matchesTab && matchesQuery && matchesWishlist;
+  });
+  document.getElementById('resultCount').textContent = filtered.length + ' files' + (showWishlistOnly ? ' (wishlist)' : '');
+  grid.innerHTML = '';
+  if(showWishlistOnly && filtered.length === 0){
+    const empty = document.createElement('div');
+    empty.className = 'orders-empty';
+    empty.style.gridColumn = '1/-1';
+    empty.innerHTML = 'Wishlist khaali hai — kisi bhi product ke &#9825; icon par click karo.';
+    grid.appendChild(empty);
+  }
+  filtered.forEach(p => grid.appendChild(makeCard(p)));
+
+  grid.querySelectorAll('.card-heart').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      toggleWishlist(parseInt(btn.dataset.wish));
+    });
+  });
+
+  grid.querySelectorAll('.card-action').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const product = PRODUCTS.find(p=>p.id === parseInt(btn.dataset.id));
+      if(product.price > 0 && product.gumroadUrl){
+        window.open(product.gumroadUrl, '_blank', 'noopener,noreferrer');
+      } else {
+        openModal(product);
+      }
+    });
+  });
+}
+
+document.getElementById('searchInput').addEventListener('input', (e)=>{
+  searchQuery = e.target.value;
+  renderGrid();
+});
+
+// ---- Product Detail Modal ----
+const detailOverlay = document.getElementById('detailOverlay');
+const REVIEWS_KEY_PREFIX = 'codebazaar_reviews_';
+let currentDetailProduct = null;
+let selectedStars = 0;
+
+function getReviews(productId){
+  try{ return JSON.parse(localStorage.getItem(REVIEWS_KEY_PREFIX + productId) || '[]'); }catch(e){ return []; }
+}
+function saveReviews(productId, reviews){
+  try{ localStorage.setItem(REVIEWS_KEY_PREFIX + productId, JSON.stringify(reviews)); }catch(e){}
+}
+function starString(n){
+  const rounded = Math.round(n);
+  return '★'.repeat(rounded) + '☆'.repeat(5 - rounded);
+}
+
+function renderReviews(productId){
+  const reviews = getReviews(productId);
+  const reviewList = document.getElementById('reviewList');
+  const ratingAvg = document.getElementById('ratingAvg');
+  const ratingStars = document.getElementById('ratingStars');
+  const ratingCount = document.getElementById('ratingCount');
+
+  if(!reviews.length){
+    ratingAvg.textContent = '—';
+    ratingStars.textContent = '☆☆☆☆☆';
+    ratingCount.textContent = 'Abhi tak koi review nahi — pehla review aap de sakte ho';
+    reviewList.innerHTML = '<div class="review-empty">No reviews yet. Kharidne ke baad apna experience yahan share karein.</div>';
+    return;
+  }
+
+  const avg = reviews.reduce((sum,r)=>sum+r.stars,0) / reviews.length;
+  ratingAvg.textContent = avg.toFixed(1);
+  ratingStars.textContent = starString(avg);
+  ratingCount.textContent = `${reviews.length} review${reviews.length>1?'s':''}`;
+
+  reviewList.innerHTML = reviews.slice().reverse().map(r => `
+    <div class="review-item">
+      <div class="review-item-top">
+        <span class="review-name">${escapeHtmlDetail(r.name)}</span>
+        <span class="review-stars">${starString(r.stars)}</span>
+      </div>
+      <div class="review-text">${escapeHtmlDetail(r.text)}</div>
+    </div>
+  `).join('');
+}
+function escapeHtmlDetail(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+document.querySelectorAll('#starPicker span').forEach(star=>{
+  star.addEventListener('click', ()=>{
+    selectedStars = parseInt(star.dataset.v);
+    document.querySelectorAll('#starPicker span').forEach(s=>{
+      s.classList.toggle('active', parseInt(s.dataset.v) <= selectedStars);
+    });
+  });
+});
+
+document.getElementById('submitReviewBtn').addEventListener('click', ()=>{
+  if(!currentDetailProduct) return;
+  const name = document.getElementById('reviewName').value.trim();
+  const text = document.getElementById('reviewText').value.trim();
+  if(!name || !text || selectedStars === 0){
+    alert('Naam, review text, aur star rating — teeno zaroori hain.');
+    return;
+  }
+  const reviews = getReviews(currentDetailProduct.id);
+  reviews.push({ name, text, stars: selectedStars, date: Date.now() });
+  saveReviews(currentDetailProduct.id, reviews);
+  document.getElementById('reviewName').value = '';
+  document.getElementById('reviewText').value = '';
+  selectedStars = 0;
+  document.querySelectorAll('#starPicker span').forEach(s=>s.classList.remove('active'));
+  renderReviews(currentDetailProduct.id);
+});
+
+function openDetail(product){
+  currentDetailProduct = product;
+  logLocalEvent('view', product.id);
+  trackEvent('view_item', { item_id: product.id, item_name: product.title, price: product.price });
+  document.getElementById('detailTitle').textContent = product.title;
+  document.getElementById('detailFilename').textContent = product.name;
+  const wishBtn = document.getElementById('detailWishBtn');
+  wishBtn.classList.toggle('active', wishlist.has(product.id));
+  wishBtn.innerHTML = wishlist.has(product.id) ? '&#9829;' : '&#9825;';
+  document.getElementById('detailVersion').textContent = product.version;
+  document.getElementById('detailUpdated').textContent = product.lastUpdated;
+  document.getElementById('detailFileSize').textContent = product.fileSize;
+  document.getElementById('detailCategory').textContent = product.tag;
+  document.getElementById('detailDesc').textContent = product.desc;
+  document.getElementById('detailRequirements').textContent = product.requirements;
+
+  // Gallery
+  const mainImg = document.getElementById('galleryMainImg');
+  const thumbs = document.getElementById('galleryThumbs');
+  if(product.images && product.images.length){
+    mainImg.src = product.images[0];
+    mainImg.parentElement.style.display = 'flex';
+    thumbs.innerHTML = product.images.map((src,i)=>`<img src="${src}" class="${i===0?'active':''}" data-src="${src}">`).join('');
+    thumbs.style.display = product.images.length > 1 ? 'flex' : 'none';
+    thumbs.querySelectorAll('img').forEach(t=>{
+      t.addEventListener('click', ()=>{
+        mainImg.src = t.dataset.src;
+        thumbs.querySelectorAll('img').forEach(x=>x.classList.remove('active'));
+        t.classList.add('active');
+      });
+    });
+  } else {
+    mainImg.parentElement.style.display = 'none';
+    thumbs.style.display = 'none';
+  }
+
+  // Features
+  document.getElementById('detailFeatures').innerHTML = product.features.map(f=>`<li>${f}</li>`).join('');
+
+  // Install steps
+  document.getElementById('detailInstall').innerHTML = product.install.map(s=>`<li>${s}</li>`).join('');
+
+  // Changelog
+  document.getElementById('detailChangelog').innerHTML = product.changelog.map(c=>`
+    <div class="changelog-item"><span class="changelog-version mono">${c.v}</span><span class="changelog-date">${c.d}</span><span class="changelog-note">${c.note}</span></div>
+  `).join('');
+
+  // FAQ
+  const faqEl = document.getElementById('detailFaq');
+  faqEl.innerHTML = product.faq.map((f,i)=>`
+    <div class="detail-faq-item" data-i="${i}">
+      <button class="detail-faq-q">${f.q}<span>+</span></button>
+      <div class="detail-faq-a"><p>${f.a}</p></div>
+    </div>
+  `).join('');
+  faqEl.querySelectorAll('.detail-faq-item').forEach(item=>{
+    item.querySelector('.detail-faq-q').addEventListener('click', ()=>{
+      const wasOpen = item.classList.contains('open');
+      faqEl.querySelectorAll('.detail-faq-item.open').forEach(o=>o.classList.remove('open'));
+      if(!wasOpen) item.classList.add('open');
+    });
+  });
+
+  // Reviews
+  renderReviews(product.id);
+
+  // Related products
+  renderRelatedProducts(product);
+
+  // Footer buy button
+  const isFree = product.price === 0;
+  const priceEl = document.getElementById('detailPrice');
+  priceEl.textContent = isFree ? 'FREE' : '₹' + product.price;
+  const buyBtn = document.getElementById('detailBuyBtn');
+  buyBtn.className = 'detail-buy-btn ' + (isFree ? 'free' : 'paid');
+  buyBtn.textContent = isFree ? 'Free me le lo' : 'Kharido';
+  buyBtn.onclick = ()=>{
+    if(product.price > 0 && product.gumroadUrl){
+      window.open(product.gumroadUrl, '_blank', 'noopener,noreferrer');
+    } else {
+      openModal(product);
+    }
+  };
+
+  detailOverlay.classList.add('show');
+}
+
+document.getElementById('detailCloseBtn').addEventListener('click', ()=> detailOverlay.classList.remove('show'));
+detailOverlay.addEventListener('click', (e)=>{ if(e.target === detailOverlay) detailOverlay.classList.remove('show'); });
+
+function renderRelatedProducts(product){
+  const section = document.getElementById('relatedSection');
+  const grid = document.getElementById('relatedGrid');
+  const related = PRODUCTS.filter(p => p.tag === product.tag && p.id !== product.id).slice(0, 4);
+  if(!related.length){
+    section.style.display = 'none';
+    return;
+  }
+  section.style.display = 'block';
+  const color = LANG_COLORS[product.tag] || '#7d8299';
+  grid.innerHTML = related.map(p=>{
+    const isFree = p.price === 0;
+    return `
+    <div class="related-card" data-id="${p.id}">
+      <div class="related-card-top">
+        <span class="related-card-dot" style="background:${color}"></span>
+      </div>
+      <div class="related-card-name">${p.title}</div>
+      <div class="related-card-price ${isFree ? 'free' : ''}">${isFree ? 'FREE' : '₹' + p.price}</div>
+    </div>
+  `;
+  }).join('');
+  grid.querySelectorAll('.related-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      const nextProduct = PRODUCTS.find(p => p.id === parseInt(card.dataset.id));
+      if(nextProduct) openDetail(nextProduct);
+    });
+  });
+}
+
+// ---- Modal ----
+const modalOverlay = document.getElementById('modalOverlay');
+let currentBuyProduct = null;
+let appliedCoupon = null;
+
+function findCoupon(codeInput){
+  const code = codeInput.trim().toUpperCase();
+  return COUPONS.find(c => c.active && c.code.toUpperCase() === code);
+}
+
+function computeDiscountedPrice(product, coupon){
+  if(!coupon || product.price < coupon.minAmount) return product.price;
+  if(coupon.type === 'percent') return Math.max(0, Math.round(product.price * (1 - coupon.value/100)));
+  return Math.max(0, product.price - coupon.value);
+}
+
+function refreshBuyModalPrice(){
+  const product = currentBuyProduct;
+  if(!product) return;
+  const finalPrice = computeDiscountedPrice(product, appliedCoupon);
+  const isPaid = finalPrice > 0;
+  document.getElementById('modalPrice').textContent = isPaid ? ('₹' + finalPrice + (finalPrice !== product.price ? ' (was ₹' + product.price + ')' : '')) : 'FREE';
+  document.getElementById('upiBlock').style.display = isPaid ? 'block' : 'none';
+  if(isPaid){ document.getElementById('upiIdText').textContent = SELLER_UPI; }
+
+  const msg = isPaid
+    ? `Hi! Maine "${product.title}" (${product.name}) ke liye ₹${finalPrice}${appliedCoupon ? ' (coupon ' + appliedCoupon.code + ' ke saath)' : ''} UPI se ${SELLER_UPI} par pay kar diya hai. Screenshot bhej raha hoon — code bhej dein.`
+    : `Hi! Mujhe "${product.title}" (${product.name}) chahiye (free listing).`;
+  document.getElementById('waLink').href = `https://wa.me/${SELLER_WHATSAPP}?text=${encodeURIComponent(msg)}`;
+  document.getElementById('waLink').textContent = isPaid ? 'Payment screenshot ke saath WhatsApp karein' : 'WhatsApp par contact karein';
+}
+
+function openModal(product){
+  currentBuyProduct = product;
+  appliedCoupon = null;
+  logLocalEvent('buy_click', product.id);
+  trackEvent('begin_checkout', { item_id: product.id, item_name: product.title, price: product.price });
+
+  document.getElementById('modalTitle').textContent = product.title;
+  document.getElementById('modalDesc').textContent = product.desc;
+
+  const couponInput = document.getElementById('couponInput');
+  const couponMsg = document.getElementById('couponMsg');
+  couponInput.value = '';
+  couponMsg.style.display = 'none';
+  document.getElementById('couponBlock').style.display = product.price > 0 ? 'block' : 'none';
+  document.getElementById('buyerEmailBlock').style.display = 'block';
+  document.getElementById('buyerEmailInput').value = '';
+
+  refreshBuyModalPrice();
+  modalOverlay.classList.add('show');
+}
+
+document.getElementById('applyCouponBtn').addEventListener('click', ()=>{
+  const couponMsg = document.getElementById('couponMsg');
+  const code = document.getElementById('couponInput').value;
+  if(!code.trim()){ return; }
+  const coupon = findCoupon(code);
+  if(!coupon){
+    appliedCoupon = null;
+    couponMsg.textContent = 'Invalid ya expired coupon code.';
+    couponMsg.style.color = 'var(--pink)';
+    couponMsg.style.display = 'block';
+  } else if(currentBuyProduct.price < coupon.minAmount){
+    appliedCoupon = null;
+    couponMsg.textContent = `Yeh coupon sirf ₹${coupon.minAmount}+ ke products par lagta hai.`;
+    couponMsg.style.color = 'var(--pink)';
+    couponMsg.style.display = 'block';
+  } else {
+    appliedCoupon = coupon;
+    const discountText = coupon.type === 'percent' ? coupon.value + '% off' : '₹' + coupon.value + ' off';
+    couponMsg.textContent = `Coupon "${coupon.code}" applied — ${discountText}!`;
+    couponMsg.style.color = 'var(--mint)';
+    couponMsg.style.display = 'block';
+  }
+  refreshBuyModalPrice();
+});
+
+// Fire an owner notification email the moment a buyer opens WhatsApp to complete payment.
+document.getElementById('waLink').addEventListener('click', ()=>{
+  if(!currentBuyProduct) return;
+  const finalPrice = computeDiscountedPrice(currentBuyProduct, appliedCoupon);
+  const buyerEmail = document.getElementById('buyerEmailInput').value.trim();
+  if(NOTIFY_EMAIL){
+    sendNotificationEmail({
+      to_email: NOTIFY_EMAIL,
+      subject: `New order started: ${currentBuyProduct.title}`,
+      message: `Product: ${currentBuyProduct.title}\nAmount: ₹${finalPrice}${appliedCoupon ? ' (coupon: ' + appliedCoupon.code + ')' : ''}\nBuyer email: ${buyerEmail || 'not provided'}\n\nCheck WhatsApp for the payment screenshot.`,
+    });
+  }
+  if(buyerEmail){
+    sendNotificationEmail({
+      to_email: buyerEmail,
+      subject: `Your CodeBazaar order — ${currentBuyProduct.title}`,
+      message: `Thanks for your order! Amount: ₹${finalPrice}. Please complete payment via UPI and share the screenshot on WhatsApp — your code will be sent right after.`,
+    });
+  }
+  trackEvent('add_to_cart', { item_id: currentBuyProduct.id, item_name: currentBuyProduct.title, price: finalPrice });
+});
+
+document.getElementById('copyUpiBtn').addEventListener('click', ()=>{
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(SELLER_UPI).then(()=>{
+      const btn = document.getElementById('copyUpiBtn');
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(()=>{ btn.textContent = original; }, 1500);
+    });
+  }
+});
+document.getElementById('closeModal').addEventListener('click', ()=> modalOverlay.classList.remove('show'));
+modalOverlay.addEventListener('click', (e)=>{ if(e.target === modalOverlay) modalOverlay.classList.remove('show'); });
+
+function sellFlow(){
+  currentBuyProduct = null;
+  document.getElementById('modalTitle').textContent = 'Apna code bechna chahte ho?';
+  document.getElementById('modalDesc').textContent = 'Humein apni script/code aur price bhejo, hum ise listing me daal denge.';
+  document.getElementById('modalPrice').textContent = '';
+  document.getElementById('upiBlock').style.display = 'none';
+  document.getElementById('couponBlock').style.display = 'none';
+  document.getElementById('buyerEmailBlock').style.display = 'none';
+  const msg = 'Hi! Main apna code CodeBazaar par bechna/list karna chahta hoon.';
+  document.getElementById('waLink').href = `https://wa.me/${SELLER_WHATSAPP}?text=${encodeURIComponent(msg)}`;
+  document.getElementById('waLink').textContent = 'WhatsApp par contact karein';
+  modalOverlay.classList.add('show');
+}
+document.getElementById('sellBtn').addEventListener('click', sellFlow);
+document.getElementById('heroSellBtn').addEventListener('click', sellFlow);
+
+function renderHeroFeature(){
+  const demoCode = document.getElementById('demoCode');
+  const lines = [
+    `<span class="ln">1</span><span class="kw">def</span> <span class="fn">send_welcome</span>(user):`,
+    `<span class="ln">2</span>    msg = <span class="str">'Namaste! '</span> + user.name`,
+    `<span class="ln">3</span>    bot.send(user, msg)`,
+    `<span class="ln">4</span>    <span class="com"># runs on every new follower</span>`,
+    `<span class="ln">5</span>`,
+    `<span class="ln">6</span>price = <span class="num">299</span><span class="caret"></span>`,
+  ];
+  demoCode.innerHTML = lines.join('\n');
+}
+
+document.getElementById('wishlistBtn').addEventListener('click', ()=>{
+  showWishlistOnly = !showWishlistOnly;
+  document.getElementById('wishlistBtn').classList.toggle('active', showWishlistOnly);
+  renderTabs();
+  renderGrid();
+});
+document.getElementById('detailWishBtn').addEventListener('click', ()=>{
+  if(currentDetailProduct) toggleWishlist(currentDetailProduct.id);
+  const wishBtn = document.getElementById('detailWishBtn');
+  const isWished = wishlist.has(currentDetailProduct.id);
+  wishBtn.classList.toggle('active', isWished);
+  wishBtn.innerHTML = isWished ? '&#9829;' : '&#9825;';
+});
+
+updateWishlistBadge();
+renderHeroFeature();
+renderGrid();
+renderTabs();
+
+// ===== 24/7 Chat widget =====
+(function(){
+  const FAQS = [
+    { q:'Payment kaise karu?', a:'Kisi bhi product par "Buy" click karo — UPI ID mil jayegi. Payment ke baad screenshot WhatsApp par bhej dena, code turant mil jayega.' },
+    { q:'Code kab milega?', a:'Payment screenshot WhatsApp par bhejte hi code turant bhej diya jaata hai — usually kuch hi minutes me.' },
+    { q:'Refund milega?', a:'Agar code kaam nahi karta ya jo describe kiya gaya usse match nahi karta, WhatsApp par batao — case-by-case refund consider karte hain.' },
+    { q:'Custom code chahiye', a:'Bilkul — apni requirement WhatsApp par bhejo, custom quote mil jayega.' },
+  ];
+
+  const bubble = document.getElementById('chatBubble');
+  const panel = document.getElementById('chatPanel');
+  const body = document.getElementById('chatBody');
+  const closeBtn = document.getElementById('chatCloseBtn');
+  const input = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('chatSendBtn');
+  if(!bubble || !panel) return;
+
+  let started = false;
+
+  function addBotMsg(text){
+    const el = document.createElement('div');
+    el.className = 'chat-msg bot';
+    el.textContent = text;
+    body.appendChild(el);
+    body.scrollTop = body.scrollHeight;
+  }
+  function addUserMsg(text){
+    const el = document.createElement('div');
+    el.className = 'chat-msg user';
+    el.textContent = text;
+    body.appendChild(el);
+    body.scrollTop = body.scrollHeight;
+  }
+  function addQuickReplies(){
+    const wrap = document.createElement('div');
+    wrap.className = 'chat-quick-replies';
+    FAQS.forEach(f=>{
+      const btn = document.createElement('button');
+      btn.className = 'chat-quick-btn';
+      btn.textContent = f.q;
+      btn.addEventListener('click', ()=>{
+        addUserMsg(f.q);
+        wrap.remove();
+        setTimeout(()=> addBotMsg(f.a), 300);
+      });
+      wrap.appendChild(btn);
+    });
+    const waBtn = document.createElement('a');
+    waBtn.className = 'chat-wa-btn';
+    waBtn.textContent = 'Kisi insaan se baat karni hai \u2192';
+    waBtn.target = '_blank';
+    waBtn.rel = 'noopener noreferrer';
+    waBtn.href = `https://wa.me/${SELLER_WHATSAPP}?text=${encodeURIComponent('Hi! Mujhe kuch poochna hai CodeBazaar ke baare me.')}`;
+    wrap.appendChild(waBtn);
+    body.appendChild(wrap);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function addDirectWaButton(){
+    const waBtn = document.createElement('a');
+    waBtn.className = 'chat-wa-btn primary';
+    waBtn.textContent = '\u{1F4AC} Seedha WhatsApp par message karo';
+    waBtn.target = '_blank';
+    waBtn.rel = 'noopener noreferrer';
+    waBtn.href = `https://wa.me/${SELLER_WHATSAPP}?text=${encodeURIComponent('Hi! Mujhe CodeBazaar ke products ke baare me poochna hai.')}`;
+    body.appendChild(waBtn);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function startConversation(){
+    if(started) return;
+    started = true;
+    addBotMsg('Hi! Main CodeBazaar ka assistant hoon \u2014 24/7 yahan hoon. Kis cheez me madad chahiye?');
+    setTimeout(addDirectWaButton, 250);
+    setTimeout(addQuickReplies, 500);
+  }
+
+  function openPanel(){
+    panel.classList.add('open');
+    bubble.querySelector('.chat-dot').style.display = 'none';
+    startConversation();
+    setTimeout(()=> input.focus(), 200);
+  }
+  function closePanel(){ panel.classList.remove('open'); }
+
+  bubble.addEventListener('click', ()=>{
+    panel.classList.contains('open') ? closePanel() : openPanel();
+  });
+  closeBtn.addEventListener('click', closePanel);
+
+  function handleFreeform(){
+    const text = input.value.trim();
+    if(!text) return;
+    addUserMsg(text);
+    input.value = '';
+    setTimeout(()=>{
+      addBotMsg('Iske liye seedha WhatsApp par baat karte hain \u2014 wahan turant reply milega:');
+      const waBtn = document.createElement('a');
+      waBtn.className = 'chat-wa-btn';
+      waBtn.textContent = 'WhatsApp par continue karo \u2192';
+      waBtn.target = '_blank';
+      waBtn.rel = 'noopener noreferrer';
+      waBtn.href = `https://wa.me/${SELLER_WHATSAPP}?text=${encodeURIComponent(text)}`;
+      body.appendChild(waBtn);
+      body.scrollTop = body.scrollHeight;
+    }, 400);
+  }
+  sendBtn.addEventListener('click', handleFreeform);
+  input.addEventListener('keydown', (e)=>{ if(e.key==='Enter') handleFreeform(); });
+})();
+
+
+(function(){
+  const splash = document.getElementById('splash');
+  if(!splash) return;
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const holdTime = reduceMotion ? 500 : 2900;
+  setTimeout(()=>{
+    splash.classList.add('hide');
+    setTimeout(()=>{ splash.remove(); }, 550);
+  }, holdTime);
+})();
+
+// ===== Local analytics (fallback / instant — this browser only) =====
+// For REAL analytics across all visitors, set GA_MEASUREMENT_ID above.
+// This local version only sees activity from whoever is using THIS
+// specific browser (mainly useful while you're testing the site).
+const ANALYTICS_KEY = 'cb_analytics_v1';
+
+function loadAnalytics(){
+  try{ return JSON.parse(localStorage.getItem(ANALYTICS_KEY) || '{"views":{},"buyClicks":{}}'); }
+  catch(e){ return { views:{}, buyClicks:{} }; }
+}
+function logLocalEvent(type, productId){
+  const data = loadAnalytics();
+  const bucket = type === 'view' ? data.views : data.buyClicks;
+  bucket[productId] = (bucket[productId] || 0) + 1;
+  try{ localStorage.setItem(ANALYTICS_KEY, JSON.stringify(data)); }catch(e){}
+}
+
+// ===== Owner: Add Product panel =====
+// NOTE: this is a soft gate only (a passcode prompt), not real security —
+// anyone can view-source and see the passcode. It just keeps casual
+// visitors from stumbling onto it. Don't rely on this to protect anything
+// sensitive; it exists purely to keep the button from cluttering the
+// public UI.
+const OWNER_PASSCODE = "codebazaar-owner";
+
+function escapeHtmlAdmin(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+let ownerUnlocked = false;
+function checkOwnerAccess(onSuccess){
+  if(ownerUnlocked){ onSuccess(); return; }
+  const code = prompt("Owner passcode:");
+  if(code === null) return;
+  if(code !== OWNER_PASSCODE){
+    alert("Galat passcode.");
+    return;
+  }
+  ownerUnlocked = true;
+  onSuccess();
+}
+
+function nextProductId(){
+  return Math.max(0, ...PRODUCTS.map(p=>p.id)) + 1;
+}
+
+function openAdminForm(){
+  const body = document.getElementById('adminModalBody');
+  const catOptions = CATEGORIES.filter(c=>c!=='all')
+    .map(c=>`<option value="${c}">${c}</option>`).join('');
+  body.innerHTML = `
+    <h3>Naya product add karo</h3>
+    <div class="admin-note">Yeh panel product ko turant is page par preview kar dega. Permanent banane ke liye — form submit karne ke baad jo code milega, use <b>PRODUCTS</b> array me paste karke file re-upload karni hogi (neeche exact steps hain).</div>
+
+    <div class="admin-field">
+      <label>Title</label>
+      <input type="text" id="af_title" placeholder="e.g. Recipe Finder App">
+    </div>
+    <div class="admin-row">
+      <div class="admin-field">
+        <label>Filename (zip)</label>
+        <input type="text" id="af_filename" placeholder="e.g. recipe_finder.zip">
+      </div>
+      <div class="admin-field">
+        <label>Price (&#8377; — 0 = free)</label>
+        <input type="number" id="af_price" placeholder="199" min="0">
+      </div>
+    </div>
+    <div class="admin-row">
+      <div class="admin-field">
+        <label>Category</label>
+        <select id="af_category">${catOptions}</select>
+      </div>
+      <div class="admin-field">
+        <label>Tech tags (comma se alag)</label>
+        <input type="text" id="af_tags" placeholder="html, css, javascript">
+      </div>
+    </div>
+    <div class="admin-field">
+      <label>Description (1-2 lines, listing card par dikhta hai)</label>
+      <textarea id="af_desc" rows="2" placeholder="Yeh code kya karta hai..."></textarea>
+    </div>
+    <div class="admin-field">
+      <label>Features (ek line = ek feature)</label>
+      <textarea id="af_features" rows="4" placeholder="Feature ek&#10;Feature do&#10;Feature teen"></textarea>
+    </div>
+    <div class="admin-field">
+      <label>Install steps (ek line = ek step)</label>
+      <textarea id="af_install" rows="3" placeholder="Files ek folder me rakho&#10;index.html kholo"></textarea>
+    </div>
+    <div class="admin-field">
+      <label>Requirements</label>
+      <input type="text" id="af_requirements" placeholder="Koi bhi modern browser, koi framework nahi chahiye.">
+    </div>
+    <p class="admin-error" id="af_error" style="display:none;"></p>
+    <div class="modal-actions">
+      <button type="button" class="wa-btn" id="af_submit" style="background:var(--blue);">Product Generate Karo</button>
+      <button type="button" class="close-btn" id="af_cancel">Cancel</button>
+    </div>
+  `;
+  document.getElementById('adminOverlay').classList.add('show');
+  document.getElementById('af_cancel').addEventListener('click', closeAdminPanel);
+  document.getElementById('af_submit').addEventListener('click', submitAdminForm);
+}
+
+function closeAdminPanel(){
+  document.getElementById('adminOverlay').classList.remove('show');
+}
+
+function submitAdminForm(){
+  const title = document.getElementById('af_title').value.trim();
+  const filename = document.getElementById('af_filename').value.trim();
+  const price = document.getElementById('af_price').value;
+  const category = document.getElementById('af_category').value;
+  const tags = document.getElementById('af_tags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  const desc = document.getElementById('af_desc').value.trim();
+  const featuresRaw = document.getElementById('af_features').value.trim();
+  const installRaw = document.getElementById('af_install').value.trim();
+  const requirements = document.getElementById('af_requirements').value.trim();
+  const errorEl = document.getElementById('af_error');
+
+  if(!title || !filename || !desc || price === '' || Number(price) < 0 || !tags.length){
+    errorEl.textContent = 'Title, filename, price, description aur kam se kam ek tag zaroori hai.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  errorEl.style.display = 'none';
+
+  const features = featuresRaw ? featuresRaw.split('\n').map(l=>l.trim()).filter(Boolean) : [];
+  const install = installRaw ? installRaw.split('\n').map(l=>l.trim()).filter(Boolean) : [];
+  const newId = nextProductId();
+  const today = new Date().toLocaleDateString('en-US', { month:'short', year:'numeric' });
+
+  const newProduct = {
+    id:newId, name:filename, title:title,
+    desc:desc, tag:category, price:Number(price), tags:tags, gumroadUrl:'',
+    images:[],
+    version:'v1.0', lastUpdated:today, fileSize:'-- KB',
+    features:features, install:install,
+    requirements: requirements || 'Koi bhi modern browser.',
+    changelog:[{v:'v1.0', d:today, note:'Initial release'}],
+    faq:[]
+  };
+
+  // Live preview — adds it to this session's in-memory catalog right away.
+  PRODUCTS.unshift(newProduct);
+  renderTabs();
+  renderGrid();
+
+  showAdminCode(newProduct);
+}
+
+function formatProductAsCode(p){
+  const lines = [];
+  lines.push('  {');
+  lines.push(`    id:${p.id}, name:'${p.name}', title:'${p.title.replace(/'/g,"\\'")}',`);
+  lines.push(`    desc:'${p.desc.replace(/'/g,"\\'")}',`);
+  lines.push(`    tag:'${p.tag}', price:${p.price}, tags:[${p.tags.map(t=>`'${t}'`).join(', ')}], gumroadUrl:'',`);
+  lines.push(`    images:[],`);
+  lines.push(`    version:'v1.0', lastUpdated:'${p.lastUpdated}', fileSize:'-- KB',`);
+  lines.push(`    features:[${p.features.length ? '\n      ' + p.features.map(f=>`'${f.replace(/'/g,"\\'")}'`).join(',\n      ') + '\n    ' : ''}],`);
+  lines.push(`    install:[${p.install.length ? '\n      ' + p.install.map(f=>`'${f.replace(/'/g,"\\'")}'`).join(',\n      ') + '\n    ' : ''}],`);
+  lines.push(`    requirements:'${p.requirements.replace(/'/g,"\\'")}',`);
+  lines.push(`    changelog:[{v:'v1.0', d:'${p.lastUpdated}', note:'Initial release'}],`);
+  lines.push(`    faq:[]`);
+  lines.push('  },');
+  return lines.join('\n');
+}
+
+function showAdminCode(product){
+  const code = formatProductAsCode(product);
+  const body = document.getElementById('adminModalBody');
+  body.innerHTML = `
+    <h3>Product preview me add ho gaya &#10003;</h3>
+    <div class="admin-note">Yeh sirf is browser session ke liye hai — reload karne par gayab ho jayega. Permanent karne ke liye neeche diye steps follow karo.</div>
+    <div class="admin-code-box" id="af_codeOutput">${escapeHtmlAdmin(code)}</div>
+    <div class="admin-steps">
+      <b>1.</b> Upar wala code "Copy Code" se copy karo.<br>
+      <b>2.</b> <code>index.html</code> file apne editor me kholo.<br>
+      <b>3.</b> <code>const PRODUCTS = [</code> line dhoondo, aur uske turant baad (pehle product se pehle) yeh code paste karo.<br>
+      <b>4.</b> File save karke apne host (GitHub Pages / Netlify) par re-upload karo.
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="wa-btn" id="af_copyBtn" style="background:var(--blue);">Copy Code</button>
+      <button type="button" class="close-btn" id="af_doneBtn">Done</button>
+    </div>
+  `;
+  document.getElementById('af_doneBtn').addEventListener('click', closeAdminPanel);
+  document.getElementById('af_copyBtn').addEventListener('click', ()=>{
+    navigator.clipboard.writeText(code).then(()=>{
+      const btn = document.getElementById('af_copyBtn');
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(()=>{ btn.textContent = original; }, 1500);
+    }).catch(()=>{
+      alert('Copy nahi ho paya — code ko manually select karke copy kar lo.');
+    });
+  });
+}
+
+document.getElementById('adminOverlay').addEventListener('click', (e)=>{
+  if(e.target.id === 'adminOverlay') closeAdminPanel();
+});
+
+// ===== Owner: Orders dashboard =====
+// Orders are stored in THIS browser's localStorage only. Since payment is
+// verified manually over WhatsApp (see the buy flow above), the intended
+// workflow is: buyer pays via UPI -> sends screenshot on WhatsApp -> you
+// log the order here yourself. There's no backend, so this dashboard
+// only shows orders logged from this specific browser/device — it does
+// not automatically see purchases made by visitors on their own devices.
+const ORDERS_KEY = 'cb_orders_v1';
+
+function loadOrders(){
+  try{ return JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]'); }
+  catch(e){ return []; }
+}
+function saveOrders(orders){
+  try{ localStorage.setItem(ORDERS_KEY, JSON.stringify(orders)); }catch(e){}
+}
+function genOrderId(){
+  return 'ORD' + Date.now().toString().slice(-8);
+}
+
+function openOrdersDashboard(){
+  document.getElementById('ordersOverlay').classList.add('show');
+  renderOrdersDashboard();
+}
+function closeOrdersDashboard(){
+  document.getElementById('ordersOverlay').classList.remove('show');
+}
+
+function renderOrdersDashboard(){
+  const orders = loadOrders().sort((a,b)=> b.createdAt - a.createdAt);
+  const paidLike = orders.filter(o=> o.status==='paid' || o.status==='delivered');
+  const totalRevenue = paidLike.reduce((sum,o)=> sum + Number(o.amount||0), 0);
+  const pendingCount = orders.filter(o=> o.status==='pending').length;
+
+  const productOptions = PRODUCTS.map(p=>`<option value="${p.id}" data-price="${p.price}">${escapeHtmlAdmin(p.title)}</option>`).join('');
+
+  const body = document.getElementById('ordersModalBody');
+  body.innerHTML = `
+    <h3>Orders Dashboard</h3>
+    <div class="admin-note">Orders sirf is browser me save hote hain (koi backend nahi hai) — jab bhi WhatsApp par payment confirm ho, order yahan manually log kar do apne records ke liye.</div>
+
+    <div class="orders-stats">
+      <div class="orders-stat"><div class="num">${orders.length}</div><div class="label">Total Orders</div></div>
+      <div class="orders-stat"><div class="num">&#8377;${totalRevenue.toLocaleString('en-IN')}</div><div class="label">Revenue (Paid+Delivered)</div></div>
+      <div class="orders-stat"><div class="num">${pendingCount}</div><div class="label">Pending Payment</div></div>
+    </div>
+
+    <div class="orders-toolbar">
+      <h3 style="font-size:14px;">Sabhi Orders</h3>
+      <div class="orders-toolbar-btns">
+        <button type="button" id="ord_exportBtn">Export CSV</button>
+        <button type="button" id="ord_closeBtn">Close</button>
+      </div>
+    </div>
+
+    <div class="orders-list" id="ordersList">
+      ${orders.length===0 ? '<div class="orders-empty">Abhi koi order log nahi hai.</div>' : orders.map(o=>`
+        <div class="order-row" data-id="${o.id}">
+          <div class="order-row-top">
+            <div>
+              <div class="order-row-product">${escapeHtmlAdmin(o.product)}</div>
+              <div class="order-row-buyer">${escapeHtmlAdmin(o.buyerName)}${o.buyerContact ? ' &middot; ' + escapeHtmlAdmin(o.buyerContact) : ''}</div>
+            </div>
+            <div class="order-row-amount">&#8377;${Number(o.amount).toLocaleString('en-IN')}</div>
+          </div>
+          <div class="order-row-bottom">
+            <span class="order-row-date">${new Date(o.createdAt).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })}</span>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <select class="order-status-select ${o.status}" data-status-for="${o.id}">
+                <option value="pending" ${o.status==='pending'?'selected':''}>Pending Payment</option>
+                <option value="paid" ${o.status==='paid'?'selected':''}>Paid</option>
+                <option value="delivered" ${o.status==='delivered'?'selected':''}>Delivered</option>
+                <option value="cancelled" ${o.status==='cancelled'?'selected':''}>Cancelled</option>
+              </select>
+              <button class="order-row-del" data-del="${o.id}">Hatao</button>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="orders-add-form">
+      <h3 style="font-size:14px; margin-bottom:12px;">Naya order log karo</h3>
+      <div class="admin-row">
+        <div class="admin-field">
+          <label>Product</label>
+          <select id="ord_product">${productOptions}</select>
+        </div>
+        <div class="admin-field">
+          <label>Amount (&#8377;)</label>
+          <input type="number" id="ord_amount" min="0">
+        </div>
+      </div>
+      <div class="admin-row">
+        <div class="admin-field">
+          <label>Buyer naam</label>
+          <input type="text" id="ord_buyerName" placeholder="Buyer ka naam">
+        </div>
+        <div class="admin-field">
+          <label>Buyer contact (optional)</label>
+          <input type="text" id="ord_buyerContact" placeholder="Phone / WhatsApp">
+        </div>
+      </div>
+      <p class="admin-error" id="ord_error" style="display:none;"></p>
+      <button type="button" class="wa-btn" id="ord_addBtn" style="background:var(--blue);">Order Add Karo</button>
+    </div>
+  `;
+
+  // Auto-fill amount when product changes
+  const productSelect = document.getElementById('ord_product');
+  const amountInput = document.getElementById('ord_amount');
+  function syncAmount(){
+    const opt = productSelect.options[productSelect.selectedIndex];
+    amountInput.value = opt ? opt.dataset.price : '';
+  }
+  productSelect.addEventListener('change', syncAmount);
+  syncAmount();
+
+  document.getElementById('ord_closeBtn').addEventListener('click', closeOrdersDashboard);
+  document.getElementById('ord_exportBtn').addEventListener('click', exportOrdersCSV);
+  document.getElementById('ord_addBtn').addEventListener('click', addOrderFromForm);
+
+  document.querySelectorAll('[data-status-for]').forEach(sel=>{
+    sel.addEventListener('change', (e)=>{
+      updateOrderStatus(sel.dataset.statusFor, e.target.value);
+    });
+  });
+  document.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(confirm('Yeh order delete karein?')) deleteOrder(btn.dataset.del);
+    });
+  });
+}
+
+function addOrderFromForm(){
+  const productSelect = document.getElementById('ord_product');
+  const productTitle = productSelect.options[productSelect.selectedIndex]?.textContent || '';
+  const amount = document.getElementById('ord_amount').value;
+  const buyerName = document.getElementById('ord_buyerName').value.trim();
+  const buyerContact = document.getElementById('ord_buyerContact').value.trim();
+  const errorEl = document.getElementById('ord_error');
+
+  if(!buyerName || amount === '' || Number(amount) < 0){
+    errorEl.textContent = 'Buyer naam aur amount zaroori hai.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const orders = loadOrders();
+  orders.push({
+    id: genOrderId(),
+    product: productTitle,
+    amount: Number(amount),
+    buyerName, buyerContact,
+    status: 'pending',
+    createdAt: Date.now(),
+  });
+  saveOrders(orders);
+  renderOrdersDashboard();
+}
+
+function updateOrderStatus(id, status){
+  const orders = loadOrders();
+  const order = orders.find(o=>o.id===id);
+  if(order){ order.status = status; saveOrders(orders); }
+  renderOrdersDashboard();
+}
+
+function deleteOrder(id){
+  const orders = loadOrders().filter(o=>o.id!==id);
+  saveOrders(orders);
+  renderOrdersDashboard();
+}
+
+function exportOrdersCSV(){
+  const orders = loadOrders().sort((a,b)=> b.createdAt - a.createdAt);
+  if(!orders.length){ alert('Koi order nahi hai export karne ke liye.'); return; }
+  const header = ['Order ID','Product','Amount','Buyer Name','Buyer Contact','Status','Date'];
+  const rows = orders.map(o=>[
+    o.id, o.product, o.amount, o.buyerName, o.buyerContact || '', o.status,
+    new Date(o.createdAt).toLocaleDateString('en-IN')
+  ]);
+  const csv = [header, ...rows].map(r=>
+    r.map(cell=> `"${String(cell).replace(/"/g,'""')}"`).join(',')
+  ).join('\n');
+  const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `codebazaar-orders-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// (menu wiring is set up further below, in the unified Owner Tools menu block)
+document.getElementById('ordersOverlay').addEventListener('click', (e)=>{
+  if(e.target.id === 'ordersOverlay') closeOrdersDashboard();
+});
+
+// ===== Owner: Analytics panel =====
+function renderAnalyticsPanel(){
+  const data = loadAnalytics();
+  const rows = PRODUCTS.map(p=>{
+    const views = data.views[p.id] || 0;
+    const clicks = data.buyClicks[p.id] || 0;
+    const conv = views > 0 ? Math.round((clicks/views)*100) : 0;
+    return { title:p.title, views, clicks, conv };
+  }).sort((a,b)=> b.views - a.views);
+
+  const totalViews = rows.reduce((s,r)=>s+r.views,0);
+  const totalClicks = rows.reduce((s,r)=>s+r.clicks,0);
+  const activeRows = rows.filter(r=> r.views>0 || r.clicks>0);
+
+  const gaStatus = GA_MEASUREMENT_ID
+    ? `&#9989; Active (ID: ${escapeHtmlAdmin(GA_MEASUREMENT_ID)})`
+    : `&#9888;&#65039; Configured nahi hai — <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer" style="color:var(--blue);">analytics.google.com</a> se free GA4 ID lo aur script me GA_MEASUREMENT_ID variable me daalo.`;
+  const emailConfigured = EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY;
+  const emailStatus = emailConfigured
+    ? `&#9989; Active${NOTIFY_EMAIL ? ' (alerts: ' + escapeHtmlAdmin(NOTIFY_EMAIL) + ')' : ' (par NOTIFY_EMAIL set nahi hai — alerts nahi milenge)'}`
+    : `&#9888;&#65039; Configured nahi hai — <a href="https://www.emailjs.com" target="_blank" rel="noopener noreferrer" style="color:var(--blue);">emailjs.com</a> par free account bana kar script me EMAILJS_* values daalo.`;
+
+  const body = document.getElementById('analyticsModalBody');
+  body.innerHTML = `
+    <h3>Analytics</h3>
+    <div class="admin-note">Neeche wala per-product data sirf <b>is browser</b> ka local record hai (koi backend nahi hai). Real cross-visitor traffic ke liye Google Analytics configure karo — status neeche.</div>
+
+    <div class="orders-stats">
+      <div class="orders-stat"><div class="num">${totalViews}</div><div class="label">Views (is browser)</div></div>
+      <div class="orders-stat"><div class="num">${totalClicks}</div><div class="label">Buy Clicks (is browser)</div></div>
+      <div class="orders-stat"><div class="num">${totalViews>0 ? Math.round((totalClicks/totalViews)*100) : 0}%</div><div class="label">Click-through rate</div></div>
+    </div>
+
+    <div class="orders-toolbar">
+      <h3 style="font-size:14px;">Per-Product Breakdown</h3>
+      <div class="orders-toolbar-btns">
+        <button type="button" id="an_resetBtn">Reset Local Stats</button>
+        <button type="button" id="an_closeBtn">Close</button>
+      </div>
+    </div>
+    <div class="orders-list">
+      ${activeRows.length === 0 ? '<div class="orders-empty">Abhi koi local view/click data nahi hai.</div>' : activeRows.map(r=>`
+        <div class="order-row">
+          <div class="order-row-top">
+            <div class="order-row-product">${escapeHtmlAdmin(r.title)}</div>
+            <div class="order-row-amount">${r.conv}%</div>
+          </div>
+          <div class="order-row-bottom">
+            <span class="order-row-date">${r.views} views &middot; ${r.clicks} buy clicks</span>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="orders-add-form">
+      <h3 style="font-size:14px; margin-bottom:10px;">Integrations Status</h3>
+      <div style="font-size:12.5px; color:var(--text-dim); line-height:2;">
+        <div><b style="color:var(--text);">Google Analytics:</b> ${gaStatus}</div>
+        <div><b style="color:var(--text);">Email Notifications:</b> ${emailStatus}</div>
+      </div>
+    </div>
+  `;
+  document.getElementById('an_closeBtn').addEventListener('click', closeAnalyticsPanel);
+  document.getElementById('an_resetBtn').addEventListener('click', ()=>{
+    if(confirm('Local view/click stats reset kar dein? (sirf is browser ka data)')){
+      try{ localStorage.removeItem(ANALYTICS_KEY); }catch(e){}
+      renderAnalyticsPanel();
+    }
+  });
+}
+function openAnalyticsPanel(){
+  document.getElementById('analyticsOverlay').classList.add('show');
+  renderAnalyticsPanel();
+}
+function closeAnalyticsPanel(){
+  document.getElementById('analyticsOverlay').classList.remove('show');
+}
+document.getElementById('analyticsOverlay').addEventListener('click', (e)=>{
+  if(e.target.id === 'analyticsOverlay') closeAnalyticsPanel();
+});
+
+// ===== Owner: Coupons panel =====
+function renderCouponsPanel(){
+  const body = document.getElementById('couponsModalBody');
+  body.innerHTML = `
+    <h3>Coupons</h3>
+    <div class="admin-note">Naye/toggle kiye coupons turant is session me test ho jaate hain (buy modal me try karo). Permanent karne ke liye generate hua code <b>COUPONS</b> array me paste karo.</div>
+
+    <div class="orders-list" id="couponsList">
+      ${COUPONS.length === 0 ? '<div class="orders-empty">Koi coupon nahi hai.</div>' : COUPONS.map((c,i)=>`
+        <div class="order-row">
+          <div class="order-row-top">
+            <div>
+              <div class="order-row-product">${escapeHtmlAdmin(c.code)}</div>
+              <div class="order-row-buyer">${c.type==='percent' ? c.value+'% off' : '&#8377;'+c.value+' off'}${c.minAmount ? ' &middot; min &#8377;'+c.minAmount : ''}</div>
+            </div>
+            <div class="order-row-amount" style="color:${c.active?'var(--mint)':'var(--text-dim)'}">${c.active?'Active':'Off'}</div>
+          </div>
+          <div class="order-row-bottom">
+            <span class="order-row-date"></span>
+            <div style="display:flex; gap:10px;">
+              <button class="order-row-del" data-toggle-coupon="${i}">${c.active?'Disable':'Enable'}</button>
+              <button class="order-row-del" data-del-coupon="${i}">Hatao</button>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="orders-add-form">
+      <h3 style="font-size:14px; margin-bottom:12px;">Naya coupon banao</h3>
+      <div class="admin-row">
+        <div class="admin-field">
+          <label>Code</label>
+          <input type="text" id="cp_code" placeholder="e.g. DIWALI20" style="text-transform:uppercase;">
+        </div>
+        <div class="admin-field">
+          <label>Type</label>
+          <select id="cp_type">
+            <option value="percent">Percent off (%)</option>
+            <option value="flat">Flat off (&#8377;)</option>
+          </select>
+        </div>
+      </div>
+      <div class="admin-row">
+        <div class="admin-field">
+          <label>Value</label>
+          <input type="number" id="cp_value" placeholder="10" min="0">
+        </div>
+        <div class="admin-field">
+          <label>Min order amount (&#8377;)</label>
+          <input type="number" id="cp_min" placeholder="0" min="0" value="0">
+        </div>
+      </div>
+      <p class="admin-error" id="cp_error" style="display:none;"></p>
+      <button type="button" class="wa-btn" id="cp_addBtn" style="background:var(--blue);">Coupon Add Karo</button>
+    </div>
+  `;
+  document.querySelectorAll('[data-toggle-coupon]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const idx = Number(btn.dataset.toggleCoupon);
+      COUPONS[idx].active = !COUPONS[idx].active;
+      renderCouponsPanel();
+    });
+  });
+  document.querySelectorAll('[data-del-coupon]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(confirm('Yeh coupon hatayein is session se? (Permanent hatane ke liye source code se bhi hatana hoga)')){
+        COUPONS.splice(Number(btn.dataset.delCoupon), 1);
+        renderCouponsPanel();
+      }
+    });
+  });
+  document.getElementById('cp_addBtn').addEventListener('click', addCouponFromForm);
+}
+
+function addCouponFromForm(){
+  const code = document.getElementById('cp_code').value.trim().toUpperCase();
+  const type = document.getElementById('cp_type').value;
+  const value = document.getElementById('cp_value').value;
+  const minAmount = document.getElementById('cp_min').value || 0;
+  const errorEl = document.getElementById('cp_error');
+
+  if(!code || value === '' || Number(value) <= 0){
+    errorEl.textContent = 'Code aur ek valid value zaroori hai.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  if(COUPONS.some(c=>c.code === code)){
+    errorEl.textContent = 'Yeh coupon code pehle se hai.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  errorEl.style.display = 'none';
+
+  const newCoupon = { code, type, value:Number(value), minAmount:Number(minAmount), active:true };
+  COUPONS.push(newCoupon);
+  showCouponCode(newCoupon);
+}
+
+function showCouponCode(coupon){
+  const codeSnippet = `  { code:'${coupon.code}', type:'${coupon.type}', value:${coupon.value}, minAmount:${coupon.minAmount}, active:true },`;
+  const body = document.getElementById('couponsModalBody');
+  body.innerHTML = `
+    <h3>Coupon add ho gaya &#10003;</h3>
+    <div class="admin-note">Yeh abhi is session me active hai — buy modal me test kar sakte ho. Permanent karne ke liye neeche wala code <b>COUPONS</b> array me paste karo.</div>
+    <div class="admin-code-box">${escapeHtmlAdmin(codeSnippet)}</div>
+    <div class="modal-actions">
+      <button type="button" class="wa-btn" id="cp_copyBtn2" style="background:var(--blue);">Copy Code</button>
+      <button type="button" class="close-btn" id="cp_backBtn">Coupons List par wapas</button>
+    </div>
+  `;
+  document.getElementById('cp_backBtn').addEventListener('click', renderCouponsPanel);
+  document.getElementById('cp_copyBtn2').addEventListener('click', ()=>{
+    navigator.clipboard.writeText(codeSnippet).then(()=>{
+      const btn = document.getElementById('cp_copyBtn2');
+      btn.textContent = 'Copied!';
+      setTimeout(()=>{ btn.textContent = 'Copy Code'; }, 1500);
+    }).catch(()=>{
+      alert('Copy nahi ho paya — code ko manually select karke copy kar lo.');
+    });
+  });
+}
+
+function openCouponsPanel(){
+  document.getElementById('couponsOverlay').classList.add('show');
+  renderCouponsPanel();
+}
+function closeCouponsPanel(){
+  document.getElementById('couponsOverlay').classList.remove('show');
+}
+document.getElementById('couponsOverlay').addEventListener('click', (e)=>{
+  if(e.target.id === 'couponsOverlay') closeCouponsPanel();
+});
+
+// ===== Owner Tools menu wiring =====
+function closeOwnerMenu(){
+  document.getElementById('ownerMenu').classList.remove('show');
+}
+document.getElementById('ownerMenuBtn').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  document.getElementById('ownerMenu').classList.toggle('show');
+});
+document.addEventListener('click', (e)=>{
+  const menu = document.getElementById('ownerMenu');
+  const wrap = document.querySelector('.owner-menu-wrap');
+  if(menu.classList.contains('show') && wrap && !wrap.contains(e.target)){
+    closeOwnerMenu();
+  }
+});
+document.getElementById('menuAddProduct').addEventListener('click', ()=>{
+  closeOwnerMenu();
+  checkOwnerAccess(openAdminForm);
+});
+document.getElementById('menuOrders').addEventListener('click', ()=>{
+  closeOwnerMenu();
+  checkOwnerAccess(openOrdersDashboard);
+});
+document.getElementById('menuAnalytics').addEventListener('click', ()=>{
+  closeOwnerMenu();
+  checkOwnerAccess(openAnalyticsPanel);
+});
+document.getElementById('menuCoupons').addEventListener('click', ()=>{
+  closeOwnerMenu();
+  checkOwnerAccess(openCouponsPanel);
+});
+</script>
+
+</html>
